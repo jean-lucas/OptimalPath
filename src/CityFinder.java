@@ -1,8 +1,10 @@
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -66,18 +68,21 @@ public class CityFinder {
 	}
 	
 	
-	public Location readFile(Scanner in) {
-
+	private Location readFile(Scanner in) throws FileNotFoundException {
+		//PrintStream output = new PrintStream("data/temp.txt");
+		
 		while (in.hasNext()) {
-			String temp = in.nextLine().substring(10).replaceAll("(\\s(\\p{Lower}+|\\p{Upper}{3}+)\\s*)|[+]|(?=-)","");  // Formatting text line
-			String[] currLine = temp.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)"); // split at the numbers .... source = http://goo.gl/DBkajk
 			
+			
+			String[] currLine = in.nextLine().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)"); // split at the numbers .... source = http://goo.gl/DBkajk
 			
 			String city = currLine[0].substring(0, currLine[0].length()-3).trim();  // get the all characters up to and not including the last two character
 			String state = currLine[0].substring(currLine[0].length()-3).trim();		 // get only the last two characters of string
 			String lat = currLine[1];
 			String lon = currLine[3];
-
+			
+			//System.out.printf("%s %s %s %s%n", city, state, lat, lon);
+			
 			if (this.city.equals(city) && this.state.equals(state)) { 
 			
 				//removing the zero in front of the numerical value represented by string (ie 0123 becomes 123) 
@@ -89,7 +94,7 @@ public class CityFinder {
 	
 				// Now we can create a Location object representing the city
 				Double latitude = Double.parseDouble(lat)/1000000.0;  
-				Double longitude = Double.parseDouble(lat)/1000000.0;
+				Double longitude = Double.parseDouble(lon)/1000000.0; 
 				in.close();
 				return new Location(latitude, longitude, city, state);
 			}
@@ -109,10 +114,8 @@ public class CityFinder {
 		try {
 			PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("data/recent_cities_usa.txt", true))); 
 			
-			// format is ugly, but it is like this, so that it can match with the original data format
-			// TODO: find a way to make this better
-			output.println(" 00 00000 "+ newLoc.getCity() + " " + newLoc.getState() +" +" + 
-										 (int) (newLoc.getLat()*1000000) + " -"+ (int) (newLoc.getLon()*1000000) );
+			output.println(newLoc.getCity() + " " + newLoc.getState() +" " + 
+										 (int) (newLoc.getLat()*1000000) + " "+ (int) (newLoc.getLon()*1000000) );
 			
 			output.close();
 		}
@@ -128,12 +131,12 @@ public class CityFinder {
 	
 //	//testing
 //	public static void main(String[] args)  { 
-//		
+//
 //		double t1 = System.nanoTime();
-	
+//	
 //		CityFinder a = new CityFinder("Yoder", "WY");
 //		Location b = a.getUSALocation();
-	
+//	
 //		double t2 = System.nanoTime();
 //		
 //		System.out.println((t2-t1)/1000);

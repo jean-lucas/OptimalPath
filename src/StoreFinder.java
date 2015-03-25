@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 
 
 /**
@@ -27,5 +31,24 @@ public class StoreFinder {
 		this.RADIUS = r;
 		this.storeName = name;
 	}
+	
+	private void setup() {
+		
+		readStoreFile(storeName.toLowerCase());
+	}
+	
+	
+	private void readStoreFile(String path) {
+
+		try {
+			Scanner input = new Scanner(new File("data/"+path+"_locations.txt"));
+		}
+		
+		catch (FileNotFoundException e ) { 
+			System.out.println(e.getLocalizedMessage());
+		}
+	}
+	
+	
 
 }

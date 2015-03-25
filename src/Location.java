@@ -8,7 +8,7 @@
  */
 
 public class Location {
-	
+	private final double R = 6378100;
 	private double latidude;		// latitude point with format XX.xxxx
 	private double longitude;		// longitude point with formath YY.yyyy
 	private String storeName; 		// Name of store (Starbucks, WalMart, etc..)
@@ -63,6 +63,18 @@ public class Location {
 		return this.ID;
 	}
 	
+	
+//calculates the distance using harversine function from this object, to Location object b
+		public int getDistance(Location b) {
+			double dLat = Math.toRadians(b.getLat() - this.getLat());
+			double dLon = Math.toRadians(b.getLon() - this.getLon());
+			double lat1 = Math.toRadians(this.getLat());
+			double lat2 = Math.toRadians(b.getLat());
+			
+			double val1 = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+			double c = 2*Math.asin(Math.sqrt(val1));
+			return (int) Math.floor(R*c);
+		}
 
 	@Override
 	public String toString() {
