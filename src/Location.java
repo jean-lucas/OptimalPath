@@ -4,9 +4,7 @@
  * Represent a unique store on a map, with attributes such as:
  * chain name, address, and latitude and longitude points.
  * 
- * TODO: implement equals() method
  * TODO: implement an alternative of toString() method
- * TODO: test toString method
  */
 
 public class Location {
@@ -31,11 +29,11 @@ public class Location {
 	}
 	
 
-//	// secondary constructor for location object where id number is not required.
-//	public Location(double lat, double lon, String name, String address, String city, String state) {
-//		this(lat, lon, name, address, city, state, 0);
-//	}
-//	
+	// secondary constructor for city Locations
+	public Location(double lat, double lon, String city, String state) {
+		this(lat, lon, "", "", city, state, 0);
+	}
+	
 	
 	
 	public double getLat() { 
@@ -72,17 +70,32 @@ public class Location {
 												 this.getLat(),this.getLon(), this.getName(), this.getCity(), this.getAddress() );
 	}
 	
+	
 
-//	@Override 
-//	public boolean equals(Object obj) {
-//		
-//	}
+	//TODO: make for tests for equality, such as latitude & longitude 
+	@Override 
+	public boolean equals(Object obj) {
+		if (obj == null) return false;																		
+		if (!(obj instanceof Location)) return false;										
+	
+		Location objTest = (Location) obj;	//temporary Locatiob object for testing purposes
+		
+		if (objTest.getID() == this.getID()) 
+			return true;
+		
+		return false;
+	}
+
+
 	
 	//testing toString
 	public static void main(String[] args) {
+		
 		Location a = new Location(31.11,35.33214, "Starbucks","123 main street XYZ 789", "Hamilton", "Ontario",0);
 		System.out.println(a.toString());
 	}
 	
 	
 }
+
+
