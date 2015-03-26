@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -15,6 +17,7 @@ import java.util.Scanner;
  * point of the radius.
  * 
  * TODO: Find efficient method to store the cities (BSTs, Hashmap, hashtable, arrays..)
+ * TODO: implement method to read file 
  *
  */
 
@@ -33,22 +36,16 @@ public class StoreFinder {
 	}
 	
 	private void setup() {
-		
-		readStoreFile(storeName.toLowerCase());
+
 	}
 	
 	
 	private void readStoreFile(String path) {
 
-		try {
-			Scanner input = new Scanner(new File("data/"+path+"_locations.txt"));
-		}
-		
-		catch (FileNotFoundException e ) { 
-			System.out.println(e.getLocalizedMessage());
-		}
 	}
 	
 	
-
+	public static void main(String[] args) {
+	
+	}
 }
