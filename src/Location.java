@@ -29,7 +29,7 @@ public class Location {
 	}
 	
 
-	// secondary constructor for city Locations
+	// secondary constructor for city Locations where the ID, name, and address are irrelevant
 	public Location(double lat, double lon, String city, String state) {
 		this(lat, lon, "", "", city, state, 0);
 	}
