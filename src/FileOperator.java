@@ -42,7 +42,7 @@ public class FileOperator {
 	
 	
 	/***********************************************************************************************
-	 * 												Methods responsible for sorting a text file
+	 * 						Methods responsible for sorting a text file
 	 ***********************************************************************************************/
 	
 	/**
