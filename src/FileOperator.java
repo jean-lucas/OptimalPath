@@ -150,7 +150,7 @@ public class FileOperator {
 			Scanner recentInput = new Scanner(new File("data/recent_cities_usa.txt"));   
 			Scanner input = new Scanner(new File("data/cities_usa.txt"));   
 			
-			Location targetCity = null;
+			Location targetCity = null; //just adding a comment
 			
 			// first check if the city can be found in the recent input text file
 			targetCity = readFile(recentInput);
