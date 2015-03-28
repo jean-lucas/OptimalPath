@@ -40,7 +40,7 @@ public class MainWindow extends JFrame {
 	
 	private JRadioButton driverOption1 = new JRadioButton("1");
 	private JRadioButton driverOption2 = new JRadioButton("2");
-	private JRadioButton driverOption3 = new JRadioButton("3");
+	private JRadioButton driverOption3 = new JRadioButton("4");
 	
 	private JCheckBox mapCheckButton = new JCheckBox("Show Map");
 	
@@ -99,12 +99,11 @@ public class MainWindow extends JFrame {
 		exitMI.addActionListener(new QuitListener());
 		instructMI.addActionListener(new InstructListner());
 			
-		
-	
-		
-		
+			
 		
 	}
+
+	
 		private class QuitListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			System.exit(0);
@@ -115,7 +114,7 @@ public class MainWindow extends JFrame {
 		private class InstructListner implements ActionListener{
 			public void actionPerformed(ActionEvent e){
 				JOptionPane.showMessageDialog(null,
-						"A simple connect four game");
+						"Coming Soon...");
 			}
 		}
 	
