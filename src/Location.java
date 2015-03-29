@@ -16,6 +16,7 @@ public class Location {
 	private String city;
 	private String state;
 	private final int ID; 			// each location has an unique ID, helps when using graph algorithms
+	boolean marked = false;
 	
 	// standard constructor for a Location object
 	public Location(double lat, double lon, String name, String address, String city, String state, int id) {

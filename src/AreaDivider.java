@@ -2,7 +2,8 @@ import java.util.ArrayList;
 /**
  *
  * Depending on the number of drivers selected (1,2 or 4)
- * The radius of the circle is divided accordingly. 
+ * The area of the circle created by the radius is divided accordingly
+ * And the the optimal path algorithm will run on each sub section
  * 
  * TODO: find efficent way to return these sections
  *
@@ -14,8 +15,13 @@ public class AreaDivider {
 	private ArrayList<Location> sectionSouth = new ArrayList<Location>();
 	private ArrayList<Location> sectionEast = new ArrayList<Location>();
 	private ArrayList<Location> sectionWest = new ArrayList<Location>();
-	
-	
+
+	//each of these values repr. the location closest to the Base/citycenter
+	//TODO: implement these...
+	private Location minDistNorth;
+	private Location minDistEast;
+	private Location minDistSouth;
+	private Location minDistWest;
 	
 	/**
 	 * 
@@ -27,7 +33,7 @@ public class AreaDivider {
 		
 		if (validStores.size() < 2) return;
 		if (base == null) return;
-		if (n == 1) return; 	//trival case
+		if (n == 1) return; 	
 		
 		if (n == 2) divideByTwo(validStores, base);
 		if (n == 4) divideByFour(validStores, base);
