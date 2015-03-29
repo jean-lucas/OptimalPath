@@ -9,11 +9,20 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import StringSorts.MSDsort;
+import StringSorts.LSDsort;
+
 /**
  * TODO: change Scanner objects to FileReader objects to read textfiles. Check if that is more efficient
+ * TODO: decided if sorting should overwrite original textfile or just write to a temp file
  * 
  * This class is responsible for all text manipulation required by the program
  * All the data files that will be manipuated are found the the "data" folder
+ * 
+ * IMPORTANT FORMATTING:
+ * any file containing information for locations of stores and cities MUST be in the following format:
+ * 
+ *                State, City, address(if its a store), latitude, longitude
  */
 public class FileOperator {
 	
@@ -21,7 +30,7 @@ public class FileOperator {
 	
 	private String city;
 	private String state;
-	//comment
+
 	
 	public FileOperator(String fileName) {
 		this.fileName += fileName;
@@ -42,7 +51,7 @@ public class FileOperator {
 	
 	
 	/***********************************************************************************************
-	 * 						Methods responsible for sorting a text file
+	 *                     Methods responsible for sorting a text file
 	 ***********************************************************************************************/
 	
 	/**
@@ -53,28 +62,38 @@ public class FileOperator {
 	 *  The design for this algorithm has been taken from  Robert Sedgewick 4e textbook "Algorithms" page 707
 	 *	It has been modified to receive input from a textfile, and output it to a textfile
 	 *
-	 * WARNING: This class will overwrite the exisiting file given in constructor
+	 * WARNING: This class will overwrite the exisiting file in tempSorted.txt
 	 */
 	public void sortFile() {
+		
+		MSDsort msd = new MSDsort();
+		LSDsort lsd = new LSDsort();
 		
 		try {
 			
 			Scanner in = new Scanner(new File(this.fileName));
-			PrintStream out = new PrintStream(this.fileName);				//output overwrites existing file
-			 
-			ArrayList<String> temp = new ArrayList<String>();				//ArrayList used since file size is unknown
-				
+			PrintStream out = new PrintStream("data/tempSorted.txt");				//output overwrites existing file in tempSorted.txt
+			System.setOut(out);
+			
+			String numOfEntries = in.nextLine().split(":")[1].trim();				//first line of textfile is number of entries
+			int fileSize = Integer.parseInt(numOfEntries);									
+			
+			System.out.println("NUMBER OF ENTRIES: " + fileSize);						//make sure the sorted file still has numOfEntries info
+			
+			String[] inputArray = new String[fileSize];											//will hold every entry of the textfile
+			
+			int lineNumber = 0;
 			while (in.hasNext()) {
-				String[] line = in.nextLine().split(",");
-				temp.add(line[1]+","+line[0]+","+line[2]+","+line[3]+","+line[4]);		
+				inputArray[lineNumber++] = in.nextLine();
 			}
 			
-			//Converting ArrayList to String[]
-			String[] inputArray = (String[]) temp.toArray(new String[0]);
 			
-			LSDsort(inputArray,2);		// the 2 represents that we are only sorting based on the first two entries of the string
+			//sort by state name (lsd), and then by city name (msd)
+			lsd.sort(inputArray, 2);	// the 2 represents that we are only sorting based on the first two entries of the string
+			msd.sort(inputArray);			// since it is a stable sort we will not scramble the sorting from LSDsort
 			
-			//print each index of the sorted array to output
+			
+			//print each index of the sorted array to output file
 			for (String line: inputArray) 
 				System.out.println(line);
 			
@@ -88,44 +107,13 @@ public class FileOperator {
 		
 	}
 	
-	/**
-	 * Least Significant Digit (LSD) sort
-	 * Taken from Sedgewick 4ed "Algorithms" page 707
-	 * @param a  array to be sorted
-	 * @param W	 size of string to be sorted
-	 */
-	private void LSDsort(String[] a, int W) {
-    int N = a.length;
-    int R = 256;   // extend ASCII alphabet size
-    String[] aux = new String[N];
 
-    for (int d = W-1; d >= 0; d--) {
-        // sort by key-indexed counting on dth character
-
-        // compute frequency counts
-        int[] count = new int[R+1];
-        for (int i = 0; i < N; i++)
-            count[a[i].charAt(d) + 1]++;
-
-        // compute cumulates
-        for (int r = 0; r < R; r++)
-            count[r+1] += count[r];
-
-        // move data
-        for (int i = 0; i < N; i++)
-            aux[count[a[i].charAt(d)]++] = a[i];
-
-        // copy back
-        for (int i = 0; i < N; i++)
-            a[i] = aux[i];
-    }
-	}
 	
 	
 	
 	
 	/***********************************************************************************************
-	 * 												Methods for finding a city in a text file
+	 *                     Methods for finding a city in a text file
 	 ***********************************************************************************************/
 	
 	/**
@@ -176,6 +164,8 @@ public class FileOperator {
 		//if all else fails 
 		return null;
 	}
+	
+	
 	
 	/**
 	 * Reads through textfile specified by the Scanner
@@ -245,7 +235,7 @@ public class FileOperator {
 	
 	
 	/***********************************************************************************************
-	 * 							Methods responsible for finding all valid stores in a specified radius
+	 *             Methods responsible for finding all valid stores in a specified radius
 	 ***********************************************************************************************/
 	
 	
@@ -254,4 +244,8 @@ public class FileOperator {
 	}
 	
 
+	public static void main(String[] args) {
+		FileOperator a= new FileOperator("walmart_locations.txt");
+		a.sortFile();
+	}
 }
