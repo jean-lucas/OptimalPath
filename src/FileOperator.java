@@ -26,7 +26,7 @@ import StringSorts.LSDsort;
  */
 public class FileOperator {
 	
-	private static String fileName = "data/";
+	private String fileName = "data/";
 	
 	private String city;
 	private String state;
@@ -243,7 +243,7 @@ public class FileOperator {
 	//using that filename that is stored within this class the following
 	//method will return all the stores that are within the radius of the 
 	//given center location object
-	public static ArrayList<Location> getStoresInRadius(Location center, int radius) {
+	public ArrayList<Location> getStoresInRadius(Location center, int radius) {
 		Scanner in;
 		
 		//make a location ArrayList
