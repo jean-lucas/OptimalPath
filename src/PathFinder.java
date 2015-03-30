@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -19,22 +21,35 @@ public class PathFinder {
 		int size = stores.size();
 		if (size == 0) return;
 		
-		Location[] inOrderPath = new Location[size];
-		Location firstStore = stores.get(0);		//TODO: firstStore should be the one CLOSEST to the BASE
+		// use circle method where we increase the radius around the base until we find a store, 
+		// mark as Marked = true when connected
+		// and switch the base to become the new store found, repeat process until all locations are marked
+//		FileOperator fo = new FileOperator("mcdonalds_locations.txt", "Anchorage", "AK");
+//		Set<Location> temp = new HashSet<Location>();
+//		
+//		for (int radius = 0; radius < 30; radius++) {
+//			fo.getStoresInRadius_set(fo.getBase(), radius);
+//			
+//		}
 		
-		double[][] allDistances = new double[stores.size()][stores.size()];
 		
-		//construct matrix of distances
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				allDistances[i][j] = stores.get(i).getDistance(stores.get(j));
-			}
-		}
 		
-		for (int i = 0; i < size; i++) {
-			
-			
-		}
+//		Location[] inOrderPath = new Location[size];
+//		Location firstStore = stores.get(0);		//TODO: firstStore should be the one CLOSEST to the BASE
+//		
+//		double[][] allDistances = new double[stores.size()][stores.size()];
+//		
+//		//construct matrix of distances
+//		for (int i = 0; i < size; i++) {
+//			for (int j = 0; j < size; j++) {
+//				allDistances[i][j] = stores.get(i).getDistance(stores.get(j));
+//			}
+//		}
+//		
+//		for (int i = 0; i < size; i++) {
+//			
+//			
+//		}
 		
 		
 	}
