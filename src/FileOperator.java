@@ -67,7 +67,7 @@ public class FileOperator {
 	public void sortFile() {
 		
 		MSDsort msd = new MSDsort();
-		LSDsort lsd = new LSDsort();
+		LSDsort lsd;
 		
 		try {
 			
@@ -80,14 +80,14 @@ public class FileOperator {
 			
 			System.out.println("NUMBER OF ENTRIES: " + fileSize);						//make sure the sorted file still has numOfEntries info
 			
-			String[] inputArray = new String[fileSize];											//will hold every entry of the textfile
+			String[] inputArray = new String[fileSize-1];											//will hold every entry of the textfile
 			
 			int lineNumber = 0;
 			while (in.hasNext()) {
 				inputArray[lineNumber++] = in.nextLine();
 			}
 			
-			
+			lsd = new LSDsort();
 			//sort by state name (lsd), and then by city name (msd)
 			lsd.sort(inputArray, 2);	// the 2 represents that we are only sorting based on the first two entries of the string
 			msd.sort(inputArray);			// since it is a stable sort we will not scramble the sorting from LSDsort
@@ -245,7 +245,7 @@ public class FileOperator {
 	
 
 	public static void main(String[] args) {
-		FileOperator a= new FileOperator("walmart_locations.txt");
+		FileOperator a= new FileOperator("starbucks_locations.txt");
 		a.sortFile();
 	}
 }
