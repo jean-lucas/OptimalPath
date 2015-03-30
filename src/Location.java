@@ -45,7 +45,7 @@ public class Location {
 	}
 	
 	public String getName() {
-		return this.storeName; 
+		return this.storeName.trim(); 
 	}
 	
 	public String getAddress() {
@@ -53,11 +53,11 @@ public class Location {
 	}
 	
 	public String getCity() {
-		return this.city;
+		return this.city.trim();
 	}
 	
 	public String getState() {
-		return this.state;
+		return this.state.trim();
 	}
 	
 	public int getID() { 
@@ -79,8 +79,8 @@ public class Location {
 
 	@Override
 	public String toString() {
-		return String.format("%0.4f  %0.4f /t  %-20s  \t %-20s  %-20s",
-												 this.getLat(),this.getLon(), this.getName(), this.getCity(), this.getAddress() );
+		return String.format("%4f  %4f \t  %-20s  \t %-20s  %-5s  %-20s",
+												 this.getLat(),this.getLon(), this.getName(), this.getCity(), this.getState(), this.getAddress() );
 	}
 	
 	
