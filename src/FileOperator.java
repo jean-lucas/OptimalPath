@@ -513,19 +513,18 @@ public class FileOperator {
 		FileOperator a= new FileOperator("mcdonalds_locations.txt","Phoenix","AZ");
 		System.out.println("CENTER LOCATION:   " + a.getCityLocation());
 		
-		double t1 = System.nanoTime();
-				
-		ArrayList<Location> c = a.getStoresInRadius(a.getCityLocation(),3);
-		System.out.println(c.size());
-		for(Location b: c) {
-			System.out.println(b.toString());
-		}
-		System.out.println("time for first method (ms):   " +(System.nanoTime() -t1)/1000000);
+//		double t1 = System.nanoTime();
+//				
+//		ArrayList<Location> c = a.getStoresInRadius(a.getCityLocation(),3);
+//		System.out.println(c.size());
+//		for(Location b: c) {
+//			System.out.println(b.toString());
+//		}
+//		System.out.println("time for first method (ms):   " +(System.nanoTime() -t1)/1000000);
+//		
+
 		
 		double t2 = System.nanoTime();
-		
-		
-		
 		
 		ArrayList<Location> d = a.getStoreInRadius2(a.getCityLocation(),3);
 		System.out.println("============================================================"); 
