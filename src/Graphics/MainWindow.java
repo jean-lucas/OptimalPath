@@ -30,7 +30,7 @@ public class MainWindow extends JFrame {
 	}
 	private static final long serialVersionUID = 1L;
 	
-	FileOperator fOp = new FileOperator("cities_usa.txt");
+	FileOperator fOp = new FileOperator("cities_usa.txt"); // this fOp should ONLY be used for constructing the citiesByState map
 	
   String[] defaultCityList = {"Please pick a state"};
 	
