@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import StringSorts.MSDsort;
@@ -44,12 +46,12 @@ public class FileOperator {
 	
 	/**
 	 * Constructor for when a new file is inserted in data
-	 * it will automatically sort the file, and create a new text file in data folder.
+	 * it will NOT automatically sort the file, if we wish to sort a new textfile
+	 * we must explicitly call sortFile(). 
 	 * @param fileName    name of textfile, musht include extension .txt
 	 */
 	public FileOperator(String fileName) {
 		this.fileName += fileName;
-		//sortFile();
 	}
 	
 	
@@ -62,9 +64,9 @@ public class FileOperator {
 	 */
 	public FileOperator(String fileName, String city, String state, String storeName) {
 		this.fileName += fileName;
-		this.city = city;
-		this.state = state;
-		this.storeName = storeName;
+		this.city = city.trim();
+		this.state = state.trim();
+		this.storeName = storeName.trim();
 		setupArrays();
 	}
 	
@@ -74,7 +76,7 @@ public class FileOperator {
 	 ***********************************************************************************************/
 	
 	private void setupArrays() {
-		if (fullLocationArrays) return;		// dont do anything since arrays are made
+		if (fullLocationArrays) return;		// dont do anything if arrays are already made
 
 		startbucksLocations = readFile("data/starbucks_locations.txt");
 		mcdonaldsLocations = readFile("data/mcdonalds_locations.txt");
@@ -121,7 +123,48 @@ public class FileOperator {
 	}
 	
 	
+	/***********************************************************************************************
+	 *               Method responsible for finding ALL cities within a state
+	 ***********************************************************************************************/	
 	
+	public Map<String, ArrayList<String>> getAllCitiesByState() {
+		
+		
+		Map<String, ArrayList<String>> tempMap = new HashMap<String, ArrayList<String>>();
+	
+		ArrayList<String> cities = new ArrayList<String>();
+		
+		String currentState = "XX";
+		
+		try {
+			Scanner in = new Scanner(new File(fileName));
+			
+			while (in.hasNext()) {
+				
+				String[] currLine = in.nextLine().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)"); // split at the digits
+				
+				String city = currLine[0].substring(0, currLine[0].length()-3).trim();  // get the all characters up to and not including the last two character
+				String state = currLine[0].substring(currLine[0].length()-3).trim();		 // get only the last two characters of string
+				
+				
+				if (state.equalsIgnoreCase(currentState))
+					cities.add(city);
+				
+				else {
+					tempMap.put(currentState, cities);
+					cities = new ArrayList<String>();	//clear the current list
+					cities.add(city);
+					currentState = state;
+				}
+			}
+		}
+		
+		catch (FileNotFoundException e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+		
+		return tempMap;
+	}
 	
 	
 	/***********************************************************************************************
@@ -256,9 +299,7 @@ public class FileOperator {
 			String lat = currLine[1];
 			String lon = currLine[3];
 			
-			
 			if (this.city.equalsIgnoreCase(city) && this.state.equalsIgnoreCase(state)) { 		
-			
 				//removing the zero in front of the numerical value represented by string (ie 0123 becomes 123) 
 				// and also adding negative sign to all values.
 				if (lon.charAt(0) == '0') 

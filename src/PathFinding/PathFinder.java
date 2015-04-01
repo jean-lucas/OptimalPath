@@ -89,15 +89,15 @@ public class PathFinder {
 	}
 	
 	
-//	
-//	
-//	public static void main(String[] args) {
-//		
-//		
-//		FileOperator fOp = new FileOperator("mcdonalds_locations.txt","Chicago","IL","mcdonalds");
-//		Location center = fOp.getCityLocation();
-//		AreaDivider ar = new AreaDivider(1, fOp.getStoreInRadius(center, 5), center);
-//		System.out.println(ar.getMinDist().toString());
-//		PathFinder a = new PathFinder(ar.getSections().get(0), ar.getMinDist());
-//	}
+	
+	
+	public static void main(String[] args) {
+		
+		
+		FileOperator fOp = new FileOperator("mcdonalds_locations.txt","Phoenix","AZ","mcdonalds");
+		Location center = fOp.getCityLocation();
+		AreaDivider ar = new AreaDivider(1, fOp.getStoreInRadius(center, 5), center);
+		System.out.println(ar.getMinDist().toString());
+		PathFinder a = new PathFinder(ar.getSections().get(0), ar.getMinDist());
+	}
 }

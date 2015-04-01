@@ -3,19 +3,21 @@ package Graphics;
  I've deicded not to include the program title in the main part of the GUI 
  because I believe that it would look better in the window's title.
  *************************************/
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import FileOp.FileOperator;
+
+
 public class MainWindow extends JFrame {
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) {
 
 		MainWindow test = new MainWindow();
 			test.setVisible(true);
@@ -27,11 +29,19 @@ public class MainWindow extends JFrame {
 
 	}
 	private static final long serialVersionUID = 1L;
+	
+	FileOperator fOp = new FileOperator("cities_usa.txt");
+	
+  String[] defaultCityList = {"Please pick a state"};
+	
+  Map<String, ArrayList<String>> citiesByState = fOp.getAllCitiesByState();		//used to represent a list of cities by respecitve state
+  
 	private  String [] states = {"--","AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA"
 			,"HI","ID","IL","IN","IA","KS","KY","LA","ME",
 			"MD","MA","MI","MN","MS","MO","MT","NE","NV",
 			"NH","HJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
 			"TX","UT","VT","VA","WA","WV","WI","WY"};
+	
 	private JButton goButton = new JButton("GO");
 	
 	private JLabel cityLabel = new JLabel("City:");
@@ -47,7 +57,7 @@ public class MainWindow extends JFrame {
 	private JCheckBox mapCheckButton = new JCheckBox("Show Map");
 	
 	private JTextField radiusField = new JTextField(); 
-	private JTextField cityField = new JTextField();
+	private JComboBox<String> cityField = new JComboBox<String>(defaultCityList);
 	
 	private JMenuItem exitMI = new JMenuItem("Exit");
 	private JMenuItem instructMI = new JMenuItem("Instructions");
@@ -99,27 +109,50 @@ public class MainWindow extends JFrame {
 		
 		exitMI.addActionListener(new QuitListener());
 		instructMI.addActionListener(new InstructListner());
-			
+		statesBox.addActionListener(new StateBoxListener());
 			
 		
 	}
 
+	//Auto Fills the cityField ComboBox depending on current state selected
+	private class StateBoxListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			
+			String stateSelected = (String) statesBox.getSelectedItem();
+			ArrayList<String> cities = citiesByState.get(stateSelected);		// get the arrayList of all cities repr. by stateSelected
+			
+			//clear the field, and add all new city names
+			cityField.removeAllItems();		
+			for (String c: cities) 
+				cityField.addItem(c);
+		}
+	}
 	
-		private class QuitListener implements ActionListener{
+	
+	private class QuitListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			System.exit(0);
 			
 			}
 		}
 		
-		private class InstructListner implements ActionListener{
-			public void actionPerformed(ActionEvent e){
-				JOptionPane.showMessageDialog(null,
-						"Coming Soon...");
+	private class InstructListner implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			JOptionPane.showMessageDialog(null,
+					"Coming Soon...");
 			}
 		}
 	
 	
+	
+	
+	private HashMap<String,String[]> getCitiesInState() {
+		
+		
+		
+		
+		return null;
+	}
 	
    
 	
