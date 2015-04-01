@@ -1,3 +1,4 @@
+package misc;
 /**
  * @author Jean Lucas
  *
@@ -15,8 +16,8 @@ public class Location {
 	private String address;			// Includes street name, street number and zip
 	private String city;
 	private String state;
-	private final int ID; 			// each location has an unique ID, helps when using graph algorithms
-	boolean marked = false;
+	private int ID; 			// each location has an unique ID, helps when using graph algorithms
+	public boolean isMarked = false;
 	
 	// standard constructor for a Location object
 	public Location(double lat, double lon, String name, String address, String city, String state, int id) {
@@ -62,6 +63,10 @@ public class Location {
 	
 	public int getID() { 
 		return this.ID;
+	}
+	
+	public void setID(int id) {
+		this.ID = id;
 	}
 	
 	

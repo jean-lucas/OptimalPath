@@ -1,3 +1,6 @@
+package FileOp;
+
+import misc.Location;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +16,6 @@ import StringSorts.MSDsort;
 import StringSorts.LSDsort;
 
 /**
- * TODO: change Scanner objects to FileReader objects to read textfiles. Check if that is more efficient
  * TODO: decided if sorting should overwrite original textfile or just write to a temp file
  * 
  * This class is responsible for all text manipulation required by the program
@@ -37,23 +39,32 @@ public class FileOperator {
 	
 	private String city;
 	private String state;
-
+	private String storeName;
 	
+	
+	/**
+	 * Constructor for when a new file is inserted in data
+	 * it will automatically sort the file, and create a new text file in data folder.
+	 * @param fileName    name of textfile, musht include extension .txt
+	 */
 	public FileOperator(String fileName) {
 		this.fileName += fileName;
-		setupArrays();
+		//sortFile();
 	}
 	
-	public FileOperator(String city, String state) {
-		this.city = city;
-		this.state = state;
-		setupArrays();
-	}
 	
-	public FileOperator(String fileName, String city, String state) {
+	/**
+	 * General constructor for any other purpose. It should only be needed to construct ONE FileOperator
+	 * object per client call.
+	 * @param fileName
+	 * @param city
+	 * @param state
+	 */
+	public FileOperator(String fileName, String city, String state, String storeName) {
 		this.fileName += fileName;
 		this.city = city;
 		this.state = state;
+		this.storeName = storeName;
 		setupArrays();
 	}
 	
@@ -76,7 +87,6 @@ public class FileOperator {
 	
 	private Location[] readFile(String path) {
 		Location[] inputArray = null;
-		String storeName = path.split("_")[0].substring(4);		//we can get the store name from the path name
 		
 		try {
 			
@@ -98,7 +108,7 @@ public class FileOperator {
 				Double lat = Double.parseDouble(currLine[3]);
 				Double lon = Double.parseDouble(currLine[4]);
 				
-				inputArray[lineNumber++] = new Location(lat,lon,storeName,address,city,state,lineNumber);
+				inputArray[lineNumber++] = new Location(lat,lon,storeName,address,city,state,lineNumber);		//linenumber is given as ID
 			}
 			
 			in.close();
@@ -134,7 +144,6 @@ public class FileOperator {
 		LSDsort lsd = new LSDsort();		
 		try {
 			
-//			String[] inputArray = readFile(fileName);
 			
 			Scanner in = new Scanner(new File(this.fileName));
 			PrintStream out = new PrintStream("data/tempSorted.txt");				//output overwrites existing file in tempSorted.txt
@@ -193,7 +202,7 @@ public class FileOperator {
 		//Check if city and state have been properly initialized
 		if (city == null || state == null) {
 			System.out.println("No city name and/or state name given");
-			return null;
+			throw new Error("City or state names were NOT set");
 		}
 		
 		
@@ -301,91 +310,7 @@ public class FileOperator {
 	/***********************************************************************************************
 	 *             Methods responsible for finding all valid stores in a specified radius
 	 ***********************************************************************************************/
-	
-	
-	
-//	//using that filename that is stored within this class the following
-//	//method will return all the stores that are within the radius of the 
-//	//given center location object
-//	public ArrayList<Location> getStoresInRadius(Location center, int radius) {
-//		Scanner in;
-//		if (center == null)  return null;
-//		//make a location ArrayList
-//		ArrayList<Location> list = new ArrayList<Location>();
-//		
-//		//start a counter for the array list
-//		int counter = 0;
-//		
-//		String[] inputArray = null;
-//		try {
-//			
-//			//import the file using the stored filename
-//			in = new Scanner(new File(fileName));
-//			String numOfEntries = in.nextLine().split(":")[1].trim();
-//			int fileSize = Integer.parseInt(numOfEntries);	
-//			System.out.println("NUMBER OF ENTRIES: " + fileSize);
-//			inputArray = new String[fileSize];
-//			int lineNumber = 0;
-//			while (in.hasNext()) {
-//				inputArray[lineNumber++] = in.nextLine();
-//			}
-//			in.close();
-//			
-//		} catch (FileNotFoundException e) {
-//			System.out.println(e.getLocalizedMessage());
-//		}
-//			
-//			
-//			for(int i = 0; i < inputArray.length;i++){
-//				
-//				
-//				//split up the current line to get
-//				String[] currentLine;
-//				try{
-//					currentLine = inputArray[i].split(",");
-//				}catch(NullPointerException u){
-//					return list;
-//				}
-//				
-//				
-//				
-//				//so it will only run if the current location it is looking at is in the proper state
-//				if(currentLine[0].substring(1).equals(center.getState())){
-//					
-//					//distance ====== sqrt( (x2-x1)^2 + (y2-y1)^2 )
-//					
-//					
-//					//assume the center is x1 and the store that we are currently checking against to be x2
-//					//likewise for y
-//					//assuming that the first given number is Lat and the second Lon
-//					double x = Double.parseDouble(currentLine[3]) - center.getLat();
-//					double y = Double.parseDouble(currentLine[4]) - center.getLon();
-//					
-//					
-//					//plug values into square root formula
-//					double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-//					//System.out.println(distance);
-//					
-//					if(distance <= radius){
-//						
-//						//create a new location object if the store is within the radius
-//						String name[] = fileName.split("_");
-//						Location loc = new Location(Double.parseDouble(currentLine[3]), Double.parseDouble(currentLine[4]), 
-//								name[0].substring(5), currentLine[2], currentLine[1], currentLine[0], counter);
-//						
-//						//add one to the counter
-//						counter++;
-//						
-//						//System.out.println(counter);
-//						//add the location object to the arraylist
-//						list.add(loc);
-//					}
-//				}
-//			}
-//		return list;
-//	}
-
-	
+ 	
 	/**
 	 * Given a center location, find all stores (storename specified in FileOperatioer constructor implicitly)
 	 * that are within the given radius.
@@ -393,7 +318,7 @@ public class FileOperator {
 	 * @param radius  max distance from center allowed
 	 * @return ArrayList<Location> of all stores found in radius
 	 */
-	private ArrayList<Location> getStoreInRadius2(Location center, int radius) {
+	public ArrayList<Location> getStoreInRadius(Location center, int radius) {
 		
 		// validating input
 		if (center == null)  return null;
@@ -401,8 +326,6 @@ public class FileOperator {
 		
 		
 		String targetLocation = center.getState()+center.getCity();	// to be used for binary search
-		
-		String storeName = fileName.split("_")[0].substring(5);			// an ugly way to get store name
 		
 		int position = -1;		// represents the array index of which the city is found in the Location Arrays
 
@@ -429,8 +352,8 @@ public class FileOperator {
 				
 		}
 		
-		// nothing was found..
-		return null;		
+		// nothing was found, return an empty list
+		return new ArrayList<Location>();
 	}
 	
 	
@@ -445,11 +368,13 @@ public class FileOperator {
 	 */
 	private ArrayList<Location> getStoreInRadius(Location center, int radius, Location[] locations, int index) {
 		
-		//city not in locations[]
-		if (index < 0 ) return null;
-		
 		ArrayList<Location> validLocations = new ArrayList<Location>();
-
+		
+		
+		//city not in locations[], return empty list
+		if (index < 0 ) return validLocations;
+		
+		
 		//once this is false we can stop searching and break out of the loop
 		boolean stillInCity = center.getCity().equalsIgnoreCase(locations[index].getCity());
 		
@@ -508,25 +433,13 @@ public class FileOperator {
 	
 	public static void main(String[] args) {
 		
-
-		
-		FileOperator a= new FileOperator("mcdonalds_locations.txt","Phoenix","AZ");
+		FileOperator a= new FileOperator("mcdonalds_locations.txt");
 		System.out.println("CENTER LOCATION:   " + a.getCityLocation());
 		
-//		double t1 = System.nanoTime();
-//				
-//		ArrayList<Location> c = a.getStoresInRadius(a.getCityLocation(),3);
-//		System.out.println(c.size());
-//		for(Location b: c) {
-//			System.out.println(b.toString());
-//		}
-//		System.out.println("time for first method (ms):   " +(System.nanoTime() -t1)/1000000);
-//		
-
 		
 		double t2 = System.nanoTime();
 		
-		ArrayList<Location> d = a.getStoreInRadius2(a.getCityLocation(),3);
+		ArrayList<Location> d = a.getStoreInRadius(a.getCityLocation(),3);
 		System.out.println("============================================================"); 
 		System.out.println(d.size());
 		for(Location b: d) {
@@ -535,3 +448,89 @@ public class FileOperator {
 		System.out.println(("time for second method (ms):   " +(System.nanoTime() -t2)/1000000));
 	}
 }
+
+
+
+
+
+
+////using that filename that is stored within this class the following
+////method will return all the stores that are within the radius of the 
+////given center location object
+//public ArrayList<Location> getStoresInRadius(Location center, int radius) {
+//Scanner in;
+//if (center == null)  return null;
+////make a location ArrayList
+//ArrayList<Location> list = new ArrayList<Location>();
+//
+////start a counter for the array list
+//int counter = 0;
+//
+//String[] inputArray = null;
+//try {
+//	
+//	//import the file using the stored filename
+//	in = new Scanner(new File(fileName));
+//	String numOfEntries = in.nextLine().split(":")[1].trim();
+//	int fileSize = Integer.parseInt(numOfEntries);	
+//	System.out.println("NUMBER OF ENTRIES: " + fileSize);
+//	inputArray = new String[fileSize];
+//	int lineNumber = 0;
+//	while (in.hasNext()) {
+//		inputArray[lineNumber++] = in.nextLine();
+//	}
+//	in.close();
+//	
+//} catch (FileNotFoundException e) {
+//	System.out.println(e.getLocalizedMessage());
+//}
+//	
+//	
+//	for(int i = 0; i < inputArray.length;i++){
+//		
+//		
+//		//split up the current line to get
+//		String[] currentLine;
+//		try{
+//			currentLine = inputArray[i].split(",");
+//		}catch(NullPointerException u){
+//			return list;
+//		}
+//		
+//		
+//		
+//		//so it will only run if the current location it is looking at is in the proper state
+//		if(currentLine[0].substring(1).equals(center.getState())){
+//			
+//			//distance ====== sqrt( (x2-x1)^2 + (y2-y1)^2 )
+//			
+//			
+//			//assume the center is x1 and the store that we are currently checking against to be x2
+//			//likewise for y
+//			//assuming that the first given number is Lat and the second Lon
+//			double x = Double.parseDouble(currentLine[3]) - center.getLat();
+//			double y = Double.parseDouble(currentLine[4]) - center.getLon();
+//			
+//			
+//			//plug values into square root formula
+//			double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+//			//System.out.println(distance);
+//			
+//			if(distance <= radius){
+//				
+//				//create a new location object if the store is within the radius
+//				String name[] = fileName.split("_");
+//				Location loc = new Location(Double.parseDouble(currentLine[3]), Double.parseDouble(currentLine[4]), 
+//						name[0].substring(5), currentLine[2], currentLine[1], currentLine[0], counter);
+//				
+//				//add one to the counter
+//				counter++;
+//				
+//				//System.out.println(counter);
+//				//add the location object to the arraylist
+//				list.add(loc);
+//			}
+//		}
+//	}
+//return list;
+//}
