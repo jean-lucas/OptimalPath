@@ -1,7 +1,12 @@
 package PathFinding;
 
-import misc.Location;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import misc.Location;
 import FileOp.FileOperator;
 import Map.MapCreator;
 
@@ -18,8 +23,10 @@ public class PathFinder {
 	
 	// anything labeled with " //remove " is just there for testing purposes
 	// and corresponding lines will be removed for final implementation
-	public PathFinder(ArrayList<Location> storesInSection, Location nearestCenter) {
-		new MapCreator().generateMap(storesInSection);		//remove
+	public PathFinder(ArrayList<Location> storesInSection, Location nearestCenter, boolean getMap) {
+		
+		if (getMap)
+			new MapCreator().generateMap(storesInSection);		//remove
 		
 		// give each location an id # from 0..size     this is bad and slows down program. Find better way
 		for (int i = 0; i < storesInSection.size(); i++) 
@@ -33,8 +40,10 @@ public class PathFinder {
 		nearestNeighbour(storesInSection, nearestCenter, G);
 		
 		
-		System.out.println(G.toString());		//remove
+//		System.out.println(G.toString());		//remove
 		
+		
+//		writeToOutput(G);
 	}
 	
 		
@@ -89,7 +98,26 @@ public class PathFinder {
 	}
 	
 	
-	
+//	private void writeToOutput(Digraph G) {
+//		try {
+//			Scanner in = new Scanner(new File("data/template.html"));
+//			PrintStream out = new PrintStream("data/output.html");
+//			System.setOut(out);
+//			while (in.hasNext()) {
+//				String line = in.nextLine();
+//				System.out.println(line);
+//				if (line.equals("<title>")) System.out.println("Map 1");
+//				
+//				if (line.equals("<body>")) System.out.println(G.toString());
+//			}
+//			
+//			in.close();
+//			out.close();
+//		}
+//		catch (FileNotFoundException e) {
+//			System.out.println(e.getLocalizedMessage());
+//		}
+//	}
 	
 	public static void main(String[] args) {
 		
@@ -98,6 +126,6 @@ public class PathFinder {
 		Location center = fOp.getCityLocation();
 		AreaDivider ar = new AreaDivider(1, fOp.getStoreInRadius(center, 5), center);
 		System.out.println(ar.getMinDist().toString());
-		PathFinder a = new PathFinder(ar.getSections().get(0), ar.getMinDist());
+		PathFinder a = new PathFinder(ar.getSections().get(0), ar.getMinDist(),true);
 	}
 }

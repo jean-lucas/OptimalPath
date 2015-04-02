@@ -1,7 +1,5 @@
 package FileOp;
 
-import misc.Location;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,8 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import StringSorts.MSDsort;
+import misc.Location;
 import StringSorts.LSDsort;
+import StringSorts.MSDsort;
 
 /**
  * TODO: decided if sorting should overwrite original textfile or just write to a temp file

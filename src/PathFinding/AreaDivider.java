@@ -1,7 +1,7 @@
 package PathFinding;
-import misc.Location;
-
 import java.util.ArrayList;
+
+import misc.Location;
 /**
  *
  * Depending on the number of drivers selected (1,2 or 4)

@@ -148,12 +148,14 @@ public class Digraph {
     public String toString() {
         StringBuilder s = new StringBuilder();
         String NEWLINE = System.getProperty("line.separator");
-        s.append(V + " vertices, " + E + " edges " + NEWLINE);
+        s.append(V + " Stores " + " to visit"+ NEWLINE + "<br>");
         for (int v = 0; v < V; v++) {
-            s.append(String.format("%d: ", v));
+            s.append(String.format("%d -> ", v));
+            if (adj[v].size() == 0) s.append("finished tour");
             for (int w : adj[v]) {
-                s.append(String.format("%d ", w));
+                s.append(String.format("%d", w));
             }
+            s.append("<br>");
             s.append(NEWLINE);
         }
         return s.toString();

@@ -84,7 +84,7 @@ public class Location {
 
 	@Override
 	public String toString() {
-		return String.format("%4f  %4f \t  %-20s  \t %-20s  %-5s  %-20s",
+		return String.format("%4f  %4f \t  %-20s  \t %-20s  %-5s  %-20s %n",
 												 this.getLat(),this.getLon(), this.getName(), this.getCity(), this.getState(), this.getAddress() );
 	}
 	

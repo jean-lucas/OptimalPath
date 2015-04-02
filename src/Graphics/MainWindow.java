@@ -3,17 +3,33 @@ package Graphics;
  I've deicded not to include the program title in the main part of the GUI 
  because I believe that it would look better in the window's title.
  *************************************/
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import misc.Location;
 import FileOp.FileOperator;
+import PathFinding.AreaDivider;
+import PathFinding.PathFinder;
 
 
 public class MainWindow extends JFrame {
@@ -33,7 +49,7 @@ public class MainWindow extends JFrame {
 	FileOperator fOp = new FileOperator("cities_usa.txt"); // this fOp should ONLY be used for constructing the citiesByState map
 	
   String[] defaultCityList = {"Please pick a state"};
-	
+  String[] defaultStores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
   Map<String, ArrayList<String>> citiesByState = fOp.getAllCitiesByState();		//used to represent a list of cities by respecitve state
   
 	private  String [] states = {"--","AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA"
@@ -58,6 +74,7 @@ public class MainWindow extends JFrame {
 	
 	private JTextField radiusField = new JTextField(); 
 	private JComboBox<String> cityField = new JComboBox<String>(defaultCityList);
+	private JComboBox<String> storeField = new JComboBox<String>(defaultStores);
 	
 	private JMenuItem exitMI = new JMenuItem("Exit");
 	private JMenuItem instructMI = new JMenuItem("Instructions");
@@ -94,26 +111,64 @@ public class MainWindow extends JFrame {
 		locationPanel.add(stateLabel);
 		locationPanel.add(statesBox);
 		
-
+		JPanel storePanel = new JPanel(new GridLayout(1,1));
+		storePanel.add(storeField);
 		
 		JPanel mapPanel = new JPanel(new GridLayout(2,2));
 		mapPanel.add(radiusLabel);
 		mapPanel.add(radiusField);
 		mapPanel.add(mapCheckButton);
 		
+		
+		
+		
 		Container container = getContentPane();
 		container.add(locationPanel,BorderLayout.NORTH); 
 		container.add(driversPanel,BorderLayout.WEST);
+		container.add(storePanel,BorderLayout.CENTER);
 		container.add(mapPanel,BorderLayout.EAST);
 		container.add(goButton,BorderLayout.SOUTH);
 		
 		exitMI.addActionListener(new QuitListener());
 		instructMI.addActionListener(new InstructListner());
 		statesBox.addActionListener(new StateBoxListener());
+		goButton.addActionListener(new goListener());
 			
 		
 	}
 
+	
+	private class goListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			
+			String storeName = ((String) storeField.getSelectedItem()).toLowerCase();
+			String fileName = storeName +"_locations.txt";
+			String cityName = (String) cityField.getSelectedItem();
+			String state =  (String) statesBox.getSelectedItem();
+			int radius = Integer.parseInt(radiusField.getText());
+			int numOfDrivers = 0;
+			if (driverOption1.isSelected())  numOfDrivers = 1;
+			if (driverOption2.isSelected())  numOfDrivers = 2;
+			if (driverOption3.isSelected())  numOfDrivers = 4;
+			
+			boolean getMap = mapCheckButton.isSelected();
+			
+			FileOperator fileOp = new FileOperator(fileName, cityName, state, storeName);
+			Location center = fileOp.getCityLocation();
+			ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);
+			AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);
+			
+			
+			
+			for (ArrayList<Location> section: area.getSections()) {
+				PathFinder path = new PathFinder(section, area.getMinDist(),getMap);
+		
+			}
+		}
+	}
+		
 	//Auto Fills the cityField ComboBox depending on current state selected
 	private class StateBoxListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
