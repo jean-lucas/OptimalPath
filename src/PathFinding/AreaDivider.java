@@ -16,7 +16,7 @@ public class AreaDivider {
 	
 	private Helper h  = new Helper();
 	
-	public ArrayList<Location> sectionNorth = new ArrayList<Location>();
+	private ArrayList<Location> sectionNorth = new ArrayList<Location>();
 	private ArrayList<Location> sectionSouth = new ArrayList<Location>();
 	private ArrayList<Location> sectionEast = new ArrayList<Location>();
 	private ArrayList<Location> sectionWest = new ArrayList<Location>();
@@ -104,8 +104,7 @@ public class AreaDivider {
 		
 		// check which two sections should be used, by seeing which pair has the smallest differece
 		// it can either be split north to south,  or east to west
-		
-		if (Math.abs(sectionNorth.size() - sectionSouth.size()) < Math.abs(sectionEast.size()) - sectionWest.size()) {
+		if (Math.abs(sectionNorth.size() - sectionSouth.size()) > Math.abs(sectionEast.size()) - sectionWest.size()) {
 			h.sections.add(sectionNorth);
 			h.sections.add(sectionSouth);
 		}

@@ -1,13 +1,8 @@
 package PathFinding;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import misc.Location;
-import FileOp.FileOperator;
 import Map.MapCreator;
 
 
@@ -19,31 +14,26 @@ import Map.MapCreator;
 public class PathFinder {
 
 	private Digraph G;
+	private ArrayList<Location> inOrderPath = new ArrayList<Location>();
 	
 	
 	// anything labeled with " //remove " is just there for testing purposes
 	// and corresponding lines will be removed for final implementation
-	public PathFinder(ArrayList<Location> storesInSection, Location nearestCenter, boolean getMap) {
+	public PathFinder(ArrayList<Location> storesInSection, Location nearestCenter, boolean getMap, int mapCount) {
 		
-		if (getMap)
-			new MapCreator().generateMap(storesInSection);		//remove
 		
-		// give each location an id # from 0..size     this is bad and slows down program. Find better way
+		// give each location an id # from 0..size     
 		for (int i = 0; i < storesInSection.size(); i++) 
 			storesInSection.get(i).setID(i);
 		
-		for (Location s: storesInSection) 				//remove
-			System.out.println(s.getAddress() + " ==== " + s.getID());		// remove
-		
-		
 		G = new Digraph(storesInSection.size());
 		nearestNeighbour(storesInSection, nearestCenter, G);
+				
+		//generate the map from the path created
+		new MapCreator().generateMap(inOrderPath, mapCount, getMap);
 		
 		
-//		System.out.println(G.toString());		//remove
 		
-		
-//		writeToOutput(G);
 	}
 	
 		
@@ -65,7 +55,8 @@ public class PathFinder {
 		
 		Location tempCenter = null;
 		
-		center.isMarked = true;			
+		center.isMarked = true;		
+		inOrderPath.add(center);
 		storeList.remove(center);		
 		
 		for (int radius = 0; radius < 30; radius++) {
@@ -96,36 +87,15 @@ public class PathFinder {
 		}
 		return null;
 	}
+
 	
-	
-//	private void writeToOutput(Digraph G) {
-//		try {
-//			Scanner in = new Scanner(new File("data/template.html"));
-//			PrintStream out = new PrintStream("data/output.html");
-//			System.setOut(out);
-//			while (in.hasNext()) {
-//				String line = in.nextLine();
-//				System.out.println(line);
-//				if (line.equals("<title>")) System.out.println("Map 1");
-//				
-//				if (line.equals("<body>")) System.out.println(G.toString());
-//			}
-//			
-//			in.close();
-//			out.close();
-//		}
-//		catch (FileNotFoundException e) {
-//			System.out.println(e.getLocalizedMessage());
-//		}
+//	public static void main(String[] args) {
+//		
+//		
+//		FileOperator fOp = new FileOperator("mcdonalds_locations.txt","Phoenix","AZ","mcdonalds");
+//		Location center = fOp.getCityLocation();
+//		AreaDivider ar = new AreaDivider(1, fOp.getStoreInRadius(center, 5), center);
+//		System.out.println(ar.getMinDist().toString());
+//		PathFinder a = new PathFinder(ar.getSections().get(0), ar.getMinDist(),true);
 //	}
-	
-	public static void main(String[] args) {
-		
-		
-		FileOperator fOp = new FileOperator("mcdonalds_locations.txt","Phoenix","AZ","mcdonalds");
-		Location center = fOp.getCityLocation();
-		AreaDivider ar = new AreaDivider(1, fOp.getStoreInRadius(center, 5), center);
-		System.out.println(ar.getMinDist().toString());
-		PathFinder a = new PathFinder(ar.getSections().get(0), ar.getMinDist(),true);
-	}
 }

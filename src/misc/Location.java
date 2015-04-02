@@ -84,13 +84,17 @@ public class Location {
 
 	@Override
 	public String toString() {
-		return String.format("%4f  %4f \t  %-20s  \t %-20s  %-5s  %-20s %n",
-												 this.getLat(),this.getLon(), this.getName(), this.getCity(), this.getState(), this.getAddress() );
+		return String.format("%s: %s %25s %s %s %s (%4f %4f) ",
+				this.getName(),"&nbsp&nbsp&nbsp&nbsp&nbsp",this.getAddress(), this.getCity(), this.getState(),
+				"&nbsp&nbsp&nbsp&nbsp&nbsp",this.getLat(),this.getLon() );
+		
+//		
+//		return String.format("%4f  %4f \t  %-20s  \t %-20s  %-5s  %-20s %n",
+//												 this.getLat(),this.getLon(), this.getName(), this.getCity(), this.getState(), this.getAddress() );
 	}
 	
 	
 
-	//TODO: make for tests for equality, such as latitude & longitude 
 	@Override 
 	public boolean equals(Object obj) {
 		if (obj == null) return false;																		
@@ -103,16 +107,6 @@ public class Location {
 		
 		return false;
 	}
-
-
-	
-	//testing toString
-	public static void main(String[] args) {
-		
-		Location a = new Location(31.11,35.33214, "Starbucks","123 main street XYZ 789", "Hamilton", "Ontario",0);
-		System.out.println(a.toString());
-	}
-	
 	
 }
 

@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import javax.swing.ButtonGroup;
@@ -46,11 +48,8 @@ public class MainWindow extends JFrame {
 	}
 	private static final long serialVersionUID = 1L;
 	
-	FileOperator fOp = new FileOperator("cities_usa.txt"); // this fOp should ONLY be used for constructing the citiesByState map
-	
   String[] defaultCityList = {"Please pick a state"};
   String[] defaultStores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
-  Map<String, ArrayList<String>> citiesByState = fOp.getAllCitiesByState();		//used to represent a list of cities by respecitve state
   
 	private  String [] states = {"--","AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA"
 			,"HI","ID","IL","IN","IA","KS","KY","LA","ME",
@@ -142,7 +141,6 @@ public class MainWindow extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			
 			String storeName = ((String) storeField.getSelectedItem()).toLowerCase();
 			String fileName = storeName +"_locations.txt";
 			String cityName = (String) cityField.getSelectedItem();
@@ -154,18 +152,19 @@ public class MainWindow extends JFrame {
 			if (driverOption3.isSelected())  numOfDrivers = 4;
 			
 			boolean getMap = mapCheckButton.isSelected();
-			
+
 			FileOperator fileOp = new FileOperator(fileName, cityName, state, storeName);
-			Location center = fileOp.getCityLocation();
-			ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);
-			AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);
+			Location center = fileOp.getCityLocation();		
 			
+			ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	//get ALL valid stores to visit
 			
+			AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);	// this will create a list of list of valid stores to visit
 			
-			for (ArrayList<Location> section: area.getSections()) {
-				PathFinder path = new PathFinder(section, area.getMinDist(),getMap);
+			int mapCount = 1;	//keeps track which map is being displayed
+			
+			for (ArrayList<Location> section: area.getSections()) 
+				new PathFinder(section, section.get(0), getMap, mapCount++);
 		
-			}
 		}
 	}
 		
@@ -173,8 +172,13 @@ public class MainWindow extends JFrame {
 	private class StateBoxListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			
+			String fileName = ((String) storeField.getSelectedItem()).toLowerCase() + "_locations.txt";
+			FileOperator fOp = new FileOperator(fileName); // this fOp should ONLY be used for constructing the citiesByState map
+			
+		  Map<String, LinkedHashSet<String>> citiesByState = fOp.getAllCitiesByState();		//used to represent a list of cities by respecitve state
+			
 			String stateSelected = (String) statesBox.getSelectedItem();
-			ArrayList<String> cities = citiesByState.get(stateSelected);		// get the arrayList of all cities repr. by stateSelected
+			LinkedHashSet<String> cities = citiesByState.get(stateSelected);		// get the arrayList of all cities repr. by stateSelected
 			
 			//clear the field, and add all new city names
 			cityField.removeAllItems();		
@@ -182,7 +186,6 @@ public class MainWindow extends JFrame {
 				cityField.addItem(c);
 		}
 	}
-	
 	
 	private class QuitListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
@@ -198,18 +201,6 @@ public class MainWindow extends JFrame {
 			}
 		}
 	
-	
-	
-	
-	private HashMap<String,String[]> getCitiesInState() {
-		
-		
-		
-		
-		return null;
-	}
-	
-   
 	
 	
 	

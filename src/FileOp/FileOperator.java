@@ -9,8 +9,11 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import misc.Location;
 import StringSorts.LSDsort;
@@ -126,36 +129,36 @@ public class FileOperator {
 	 *               Method responsible for finding ALL cities within a state
 	 ***********************************************************************************************/	
 	
-	public Map<String, ArrayList<String>> getAllCitiesByState() {
+	public Map<String, LinkedHashSet<String>> getAllCitiesByState() {
 		
 		
-		Map<String, ArrayList<String>> tempMap = new HashMap<String, ArrayList<String>>();
+		Map<String, LinkedHashSet<String>> tempMap = new HashMap<String, LinkedHashSet<String>>();
 	
-		ArrayList<String> cities = new ArrayList<String>();
+		LinkedHashSet<String> cities = new LinkedHashSet<String>();
 		
 		String currentState = "XX";
 		
 		try {
 			Scanner in = new Scanner(new File(fileName));
-			
+			in.nextLine();
 			while (in.hasNext()) {
 				
-				String[] currLine = in.nextLine().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)"); // split at the digits
+				String[] currLine = in.nextLine().split(","); // split at the digits
 				
-				String city = currLine[0].substring(0, currLine[0].length()-3).trim();  // get the all characters up to and not including the last two character
-				String state = currLine[0].substring(currLine[0].length()-3).trim();		 // get only the last two characters of string
-				
+				String city = currLine[1].trim(); 
+				String state = currLine[0].trim();		
 				
 				if (state.equalsIgnoreCase(currentState))
 					cities.add(city);
 				
 				else {
 					tempMap.put(currentState, cities);
-					cities = new ArrayList<String>();	//clear the current list
+					cities = new LinkedHashSet<String>();	//clear the current list
 					cities.add(city);
 					currentState = state;
 				}
 			}
+			in.close();
 		}
 		
 		catch (FileNotFoundException e) {
