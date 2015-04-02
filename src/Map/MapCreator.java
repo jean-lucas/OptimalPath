@@ -6,12 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import PathFinding.Digraph;
 import misc.Location;
 
 
 public class MapCreator {
 
-	public void generateMap(ArrayList<Location> list, int mapCount, boolean getMap) {
+	public void generateMap(ArrayList<Location> list, Digraph G,int mapCount, boolean getMap) {
 		String[] points = new String[list.size()];
 		
 		System.out.println(list.get(0).getLon());
@@ -55,10 +57,12 @@ public class MapCreator {
 					if (line.equals("<body>")) {
 						System.out.println("<strong>In order path for driver #"+mapCount+" "
 								+ "</strong><br><br><hr style='width:85%;'/>");
-						System.out.println("<ol type='i'>");
+						System.out.println("<ol start='0'>");
 						for (Location c: list) 
 							System.out.println("<li>" + c.toString() +"</li>");
 						System.out.println("</ol>");
+						System.out.println("<br>");
+						System.out.println(G.toString());
 					}
 					System.out.println();
 				}

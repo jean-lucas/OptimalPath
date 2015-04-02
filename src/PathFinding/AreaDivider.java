@@ -99,12 +99,12 @@ public class AreaDivider {
 			if (tempLon < LON) 
 				sectionWest.add(store);
 			else
-				sectionWest.add(store);
+				sectionEast.add(store);
 		}
 		
 		// check which two sections should be used, by seeing which pair has the smallest differece
 		// it can either be split north to south,  or east to west
-		if (Math.abs(sectionNorth.size() - sectionSouth.size()) > Math.abs(sectionEast.size()) - sectionWest.size()) {
+		if (Math.abs(sectionNorth.size() - sectionSouth.size()) < Math.abs(sectionEast.size()) - sectionWest.size()) {
 			h.sections.add(sectionNorth);
 			h.sections.add(sectionSouth);
 		}

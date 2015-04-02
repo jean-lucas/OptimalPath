@@ -162,9 +162,11 @@ public class MainWindow extends JFrame {
 			
 			int mapCount = 1;	//keeps track which map is being displayed
 			
-			for (ArrayList<Location> section: area.getSections()) 
+			for (ArrayList<Location> section: area.getSections()) {
+				if (section.isEmpty()) continue;
+				
 				new PathFinder(section, section.get(0), getMap, mapCount++);
-		
+			}
 		}
 	}
 		

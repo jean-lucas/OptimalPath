@@ -474,22 +474,22 @@ public class FileOperator {
 	
 	
 	
-	public static void main(String[] args) {
-		
-		FileOperator a= new FileOperator("mcdonalds_locations.txt");
-		System.out.println("CENTER LOCATION:   " + a.getCityLocation());
-		
-		
-		double t2 = System.nanoTime();
-		
-		ArrayList<Location> d = a.getStoreInRadius(a.getCityLocation(),3);
-		System.out.println("============================================================"); 
-		System.out.println(d.size());
-		for(Location b: d) {
-			System.out.println(b.toString());
-		}
-		System.out.println(("time for second method (ms):   " +(System.nanoTime() -t2)/1000000));
-	}
+//	public static void main(String[] args) {
+//		
+//		FileOperator a= new FileOperator("mcdonalds_locations.txt");
+//		System.out.println("CENTER LOCATION:   " + a.getCityLocation());
+//		
+//		
+//		double t2 = System.nanoTime();
+//		
+//		ArrayList<Location> d = a.getStoreInRadius(a.getCityLocation(),3);
+//		System.out.println("============================================================"); 
+//		System.out.println(d.size());
+//		for(Location b: d) {
+//			System.out.println(b.toString());
+//		}
+//		System.out.println(("time for second method (ms):   " +(System.nanoTime() -t2)/1000000));
+//	}
 }
 
 

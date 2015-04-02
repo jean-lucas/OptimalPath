@@ -30,7 +30,7 @@ public class PathFinder {
 		nearestNeighbour(storesInSection, nearestCenter, G);
 				
 		//generate the map from the path created
-		new MapCreator().generateMap(inOrderPath, mapCount, getMap);
+		new MapCreator().generateMap(inOrderPath, G, mapCount, getMap);
 		
 		
 		
