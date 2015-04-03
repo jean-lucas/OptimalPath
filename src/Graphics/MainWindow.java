@@ -35,13 +35,24 @@ import PathFinding.PathFinder;
 
 
 public class MainWindow extends JFrame {
+	public static String store;
+	public static Object[] Stores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
 	public static void main(String[] args) {
-
+		 //the following code prompts the user for their store before actually going to the program 
+		store = (String)JOptionPane.showInputDialog(
+				null,
+				"Select your store",
+				"Store Selection",
+				JOptionPane.PLAIN_MESSAGE,
+				null, Stores,
+				"Starbucks");
+		store = store.toLowerCase();
+		
 		MainWindow test = new MainWindow();
 			test.setVisible(true);
 			test.setTitle("Optimal Delivery Path");
 			test.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			test.setSize(500, 500);
+			test.setSize(250, 250);
 			test.pack();
 			
 
@@ -71,18 +82,21 @@ public class MainWindow extends JFrame {
 	
 	private JCheckBox mapCheckButton = new JCheckBox("Show Map");
 	
-	private JTextField radiusField = new JTextField(); 
+	private JTextField radiusField = new JTextField(15); 
 	private JComboBox<String> cityField = new JComboBox<String>(defaultCityList);
 	private JComboBox<String> storeField = new JComboBox<String>(defaultStores);
 	
 	private JMenuItem exitMI = new JMenuItem("Exit");
+	private JMenuItem storeMI = new JMenuItem("Set Store");
 	private JMenuItem instructMI = new JMenuItem("Instructions");
 	private JComboBox<String> statesBox = new JComboBox<>(states); 
 	
 	
 	public MainWindow(){
 		JMenu fileMenu = new JMenu("File");
+		fileMenu.add(storeMI);
 		fileMenu.add(exitMI);
+		
 		
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.add(instructMI); 
@@ -121,13 +135,16 @@ public class MainWindow extends JFrame {
 		
 		
 		
+		
+		
 		Container container = getContentPane();
 		container.add(locationPanel,BorderLayout.NORTH); 
 		container.add(driversPanel,BorderLayout.WEST);
-		container.add(storePanel,BorderLayout.CENTER);
+		//container.add(storePanel,BorderLayout.CENTER);
 		container.add(mapPanel,BorderLayout.EAST);
 		container.add(goButton,BorderLayout.SOUTH);
 		
+		storeMI.addActionListener(new StoreSelectListener()); 
 		exitMI.addActionListener(new QuitListener());
 		instructMI.addActionListener(new InstructListner());
 		statesBox.addActionListener(new StateBoxListener());
@@ -135,14 +152,17 @@ public class MainWindow extends JFrame {
 			
 		
 	}
+	
+
 
 	
 	private class goListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			String storeName = ((String) storeField.getSelectedItem()).toLowerCase();
-			String fileName = storeName +"_locations.txt";
+			//String storeName = ((String) storeField.getSelectedItem()).toLowerCase();
+			String fileName = store +"_locations.txt";
+			//String fileName = storeName +"_locations.txt";
 			String cityName = (String) cityField.getSelectedItem();
 			String state =  (String) statesBox.getSelectedItem();
 			int radius = Integer.parseInt(radiusField.getText());
@@ -153,7 +173,7 @@ public class MainWindow extends JFrame {
 			
 			boolean getMap = mapCheckButton.isSelected();
 
-			FileOperator fileOp = new FileOperator(fileName, cityName, state, storeName);
+			FileOperator fileOp = new FileOperator(fileName, cityName, state, store);
 			Location center = fileOp.getCityLocation();		
 			
 			ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	//get ALL valid stores to visit
@@ -174,7 +194,7 @@ public class MainWindow extends JFrame {
 	private class StateBoxListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			
-			String fileName = ((String) storeField.getSelectedItem()).toLowerCase() + "_locations.txt";
+			String fileName = store+ "_locations.txt";
 			FileOperator fOp = new FileOperator(fileName); // this fOp should ONLY be used for constructing the citiesByState map
 			
 		  Map<String, LinkedHashSet<String>> citiesByState = fOp.getAllCitiesByState();		//used to represent a list of cities by respecitve state
@@ -202,7 +222,18 @@ public class MainWindow extends JFrame {
 					"Coming Soon...");
 			}
 		}
-	
+	private class StoreSelectListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			store = (String)JOptionPane.showInputDialog(
+					null,
+					"Select your store",
+					"Store Selection",
+					JOptionPane.PLAIN_MESSAGE,
+					null, Stores,
+					"Starbucks");
+			store = store.toLowerCase();
+		}
+	}
 	
 	
 	
