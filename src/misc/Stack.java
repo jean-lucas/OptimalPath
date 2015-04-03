@@ -4,22 +4,10 @@ import java.util.NoSuchElementException;
 
 
 /**
- *  The <tt>Stack</tt> class represents a last-in-first-out (LIFO) stack of generic items.
- *  It supports the usual <em>push</em> and <em>pop</em> operations, along with methods
- *  for peeking at the top item, testing if the stack is empty, and iterating through
- *  the items in LIFO order.
- *  <p>
- *  This implementation uses a singly-linked list with a static nested class for
- *  linked-list nodes. See {@link LinkedStack} for the version from the
- *  textbook that uses a non-static nested class.
- *  The <em>push</em>, <em>pop</em>, <em>peek</em>, <em>size</em>, and <em>is-empty</em>
- *  operations all take constant time in the worst case.
- *  <p>
- *  For additional documentation, see <a href="/algs4/13stacks">Section 1.3</a> of
- *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
- *
- *  @author Robert Sedgewick
- *  @author Kevin Wayne
+ * Least Significant Digit (LSD) sort
+ * Taken from Robert Sedgewick 4ed "Algorithms" Textbook website
+ * source : http://algs4.cs.princeton.edu/13stacks/
+ * 
  */
 public class Stack<Item> implements Iterable<Item> {
     private int N;                // size of the stack

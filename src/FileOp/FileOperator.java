@@ -16,19 +16,15 @@ import java.util.Scanner;
 import java.util.Set;
 
 import misc.Location;
+import ExceptionChecks.EmptyListException;
+import ExceptionChecks.InconsistentDatasetException;
 import StringSorts.LSDsort;
 import StringSorts.MSDsort;
 
 /**
- * TODO: decided if sorting should overwrite original textfile or just write to a temp file
- * 
  * This class is responsible for all text manipulation required by the program
  * All the data files that will be manipuated are found the the "data" folder
  * 
- * IMPORTANT FORMATTING:
- * any file containing information for locations of stores and cities MUST be in the following format:
- * 
- *                State, City, address(if its a store), latitude, longitude
  */
 public class FileOperator {
 	
@@ -49,7 +45,7 @@ public class FileOperator {
 	/**
 	 * Constructor for when a new file is inserted in data
 	 * it will NOT automatically sort the file, if we wish to sort a new textfile
-	 * we must explicitly call sortFile(). 
+	 * we must explicitly call sortFile().
 	 * @param fileName    name of textfile, musht include extension .txt
 	 */
 	public FileOperator(String fileName) {
@@ -58,8 +54,7 @@ public class FileOperator {
 	
 	
 	/**
-	 * General constructor for any other purpose. It should only be needed to construct ONE FileOperator
-	 * object per client call.
+	 * General constructor for any other purpose. This constructor should only be called ONCE per client call.
 	 * @param fileName
 	 * @param city
 	 * @param state
@@ -69,7 +64,7 @@ public class FileOperator {
 		this.city = city.trim();
 		this.state = state.trim();
 		this.storeName = storeName.trim();
-		setupArrays();
+		setupArrays();		// fill the arrays
 	}
 	
 	
@@ -77,6 +72,11 @@ public class FileOperator {
 	 *                Methods responsible for populating location arrays from textfile
 	 ***********************************************************************************************/
 	
+	/*
+	 * Setup Locatiob object arrays for each store, as soon as the FileOperator class is constructed.
+	 * By spending this extra memory, we will be able to search through the files in logarithmic time, at
+	 * any point required by client.
+	 */
 	private void setupArrays() {
 		if (fullLocationArrays) return;		// dont do anything if arrays are already made
 
@@ -143,7 +143,7 @@ public class FileOperator {
 			in.nextLine();
 			while (in.hasNext()) {
 				
-				String[] currLine = in.nextLine().split(","); // split at the digits
+				String[] currLine = in.nextLine().split(","); 
 				
 				String city = currLine[1].trim(); 
 				String state = currLine[0].trim();		
@@ -241,13 +241,13 @@ public class FileOperator {
 	 * Using this "cache-like" text file can greatly decrease search times for large files
 	 * 
 	 * @return Location object representing the city
+	 * @throws InconsistentDatasetException
 	 */
-	public Location getCityLocation() {
+	public Location getCityLocation() throws InconsistentDatasetException {
 		
 		//Check if city and state have been properly initialized
 		if (city == null || state == null) {
-			System.out.println("No city name and/or state name given");
-			throw new Error("City or state names were NOT set");
+			throw new NullPointerException("Can not find city location...No city name and/or state name given");
 		}
 		
 		
@@ -256,7 +256,7 @@ public class FileOperator {
 			Scanner recentInput = new Scanner(new File("data/recent_cities_usa.txt"));   
 			Scanner input = new Scanner(new File("data/cities_usa.txt"));   
 			
-			Location targetCity = null; //just adding a comment
+			Location targetCity = null; 
 			
 			// first check if the city can be found in the recent input text file
 			targetCity = readFile(recentInput);
@@ -269,7 +269,8 @@ public class FileOperator {
 			
 			// if city has still NOT be found, then possibly it is mispelled or it is not in the data set
 			if (targetCity == null) 
-				System.out.println("City not found, please check the spelling");
+				throw new InconsistentDatasetException();
+			
 			
 			return targetCity;
 		}
@@ -469,111 +470,9 @@ public class FileOperator {
 		}
 		return -1;
 	}
-
-	
-	
-	
-	
-//	public static void main(String[] args) {
-//		
-//		FileOperator a= new FileOperator("mcdonalds_locations.txt");
-//		System.out.println("CENTER LOCATION:   " + a.getCityLocation());
-//		
-//		
-//		double t2 = System.nanoTime();
-//		
-//		ArrayList<Location> d = a.getStoreInRadius(a.getCityLocation(),3);
-//		System.out.println("============================================================"); 
-//		System.out.println(d.size());
-//		for(Location b: d) {
-//			System.out.println(b.toString());
-//		}
-//		System.out.println(("time for second method (ms):   " +(System.nanoTime() -t2)/1000000));
-//	}
 }
 
-
-
-
-
-
-////using that filename that is stored within this class the following
-////method will return all the stores that are within the radius of the 
-////given center location object
-//public ArrayList<Location> getStoresInRadius(Location center, int radius) {
-//Scanner in;
-//if (center == null)  return null;
-////make a location ArrayList
-//ArrayList<Location> list = new ArrayList<Location>();
-//
-////start a counter for the array list
-//int counter = 0;
-//
-//String[] inputArray = null;
-//try {
-//	
-//	//import the file using the stored filename
-//	in = new Scanner(new File(fileName));
-//	String numOfEntries = in.nextLine().split(":")[1].trim();
-//	int fileSize = Integer.parseInt(numOfEntries);	
-//	System.out.println("NUMBER OF ENTRIES: " + fileSize);
-//	inputArray = new String[fileSize];
-//	int lineNumber = 0;
-//	while (in.hasNext()) {
-//		inputArray[lineNumber++] = in.nextLine();
-//	}
-//	in.close();
-//	
-//} catch (FileNotFoundException e) {
-//	System.out.println(e.getLocalizedMessage());
-//}
-//	
-//	
-//	for(int i = 0; i < inputArray.length;i++){
-//		
-//		
-//		//split up the current line to get
-//		String[] currentLine;
-//		try{
-//			currentLine = inputArray[i].split(",");
-//		}catch(NullPointerException u){
-//			return list;
-//		}
-//		
-//		
-//		
-//		//so it will only run if the current location it is looking at is in the proper state
-//		if(currentLine[0].substring(1).equals(center.getState())){
-//			
-//			//distance ====== sqrt( (x2-x1)^2 + (y2-y1)^2 )
-//			
-//			
-//			//assume the center is x1 and the store that we are currently checking against to be x2
-//			//likewise for y
-//			//assuming that the first given number is Lat and the second Lon
-//			double x = Double.parseDouble(currentLine[3]) - center.getLat();
-//			double y = Double.parseDouble(currentLine[4]) - center.getLon();
-//			
-//			
-//			//plug values into square root formula
-//			double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-//			//System.out.println(distance);
-//			
-//			if(distance <= radius){
-//				
-//				//create a new location object if the store is within the radius
-//				String name[] = fileName.split("_");
-//				Location loc = new Location(Double.parseDouble(currentLine[3]), Double.parseDouble(currentLine[4]), 
-//						name[0].substring(5), currentLine[2], currentLine[1], currentLine[0], counter);
-//				
-//				//add one to the counter
-//				counter++;
-//				
-//				//System.out.println(counter);
-//				//add the location object to the arraylist
-//				list.add(loc);
-//			}
-//		}
-//	}
-//return list;
-//}
+	
+	
+	
+	

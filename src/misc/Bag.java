@@ -2,7 +2,12 @@ package misc;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-
+/**
+ * Least Significant Digit (LSD) sort
+ * Taken from Robert Sedgewick 4ed "Algorithms" Textbook website
+ * source : http://algs4.cs.princeton.edu/13stacks/
+ * 
+ */
 public class Bag<Item> implements Iterable<Item> {
     private int N;               // number of elements in bag
     private Node<Item> first;    // beginning of bag

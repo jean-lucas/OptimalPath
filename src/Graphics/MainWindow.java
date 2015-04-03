@@ -9,8 +9,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -29,6 +27,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import misc.Location;
+import ExceptionChecks.EmptyListException;
+import ExceptionChecks.InconsistentDatasetException;
 import FileOp.FileOperator;
 import PathFinding.AreaDivider;
 import PathFinding.PathFinder;
@@ -162,32 +162,55 @@ public class MainWindow extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			//String storeName = ((String) storeField.getSelectedItem()).toLowerCase();
-			String fileName = store +"_locations.txt";
-			//String fileName = storeName +"_locations.txt";
-			String cityName = (String) cityField.getSelectedItem();
-			String state =  (String) statesBox.getSelectedItem();
-			int radius = Integer.parseInt(radiusField.getText());
-			int numOfDrivers = 0;
-			if (driverOption1.isSelected())  numOfDrivers = 1;
-			if (driverOption2.isSelected())  numOfDrivers = 2;
-			if (driverOption3.isSelected())  numOfDrivers = 4;
+			try {
+				//String storeName = ((String) storeField.getSelectedItem()).toLowerCase();
+				String fileName = store +"_locations.txt";
+				//String fileName = storeName +"_locations.txt";
+				String cityName = (String) cityField.getSelectedItem();
+				String state =  (String) statesBox.getSelectedItem();
 			
-			boolean getMap = mapCheckButton.isSelected();
-
-			FileOperator fileOp = new FileOperator(fileName, cityName, state, store);
-			Location center = fileOp.getCityLocation();		
-			
-			ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	//get ALL valid stores to visit
-			
-			AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);	// this will create a list of list of valid stores to visit
-			
-			int mapCount = 1;	//keeps track which map is being displayed
-			
-			for (ArrayList<Location> section: area.getSections()) {
-				if (section.isEmpty()) continue;
+				boolean getMap = mapCheckButton.isSelected();
 				
-				new PathFinder(section, section.get(0), getMap, mapCount++);
+				int radius = Integer.parseInt(radiusField.getText());
+				int mapCount = 1;	//keeps track which map is being displayed
+				int numOfDrivers = 0;
+				if (driverOption1.isSelected())  numOfDrivers = 1;
+				if (driverOption2.isSelected())  numOfDrivers = 2;
+				if (driverOption3.isSelected())  numOfDrivers = 4;
+				
+				// check valid radius
+				if (radius <= 0 || radius > 40) throw new IllegalArgumentException();
+				
+	
+				FileOperator fileOp = new FileOperator(fileName, cityName, state, store);
+				Location center = fileOp.getCityLocation();		
+				
+				ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	//get ALL valid stores to visit
+				
+				AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);	// this will create a list of list of valid stores to visit
+				
+				//checking for valid sections
+				if (area.getSections().isEmpty()) throw new EmptyListException();
+				for (ArrayList<Location> section: area.getSections()) {
+					if (section.isEmpty()) continue;
+					
+					new PathFinder(section, section.get(0), getMap, mapCount++);
+				}
+			}
+			
+			catch (InconsistentDatasetException e1) {
+				JOptionPane.showMessageDialog(null, "Our apologies!\nThe city selected was not \n"
+																							+ "found in our cities database.");
+			}
+			catch (EmptyListException e1) {
+				JOptionPane.showMessageDialog(null, "No stores were found in this city radius. \n"
+																						+ "Try again with a bigger radius or a new city.");
+			}
+			catch (IllegalArgumentException e1) {
+				JOptionPane.showMessageDialog(null, "Radius must be between 1 and 40. ");
+			}
+			catch (Exception e1) {
+				JOptionPane.showMessageDialog(null, "Something went wrong! \nPlease check all inputs.");
 			}
 		}
 	}
