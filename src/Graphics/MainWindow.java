@@ -52,7 +52,9 @@ public class MainWindow extends JFrame {
 			test.setVisible(true);
 			test.setTitle("Optimal Delivery Path");
 			test.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
 			test.setSize(250, 250);
+			test.setResizable(false);
 			test.pack();
 			
 
