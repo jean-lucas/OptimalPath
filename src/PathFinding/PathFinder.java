@@ -16,7 +16,6 @@ public class PathFinder {
 	private Digraph G;
 	private ArrayList<Location> inOrderPath = new ArrayList<Location>();
 	
-	
 	// anything labeled with " //remove " is just there for testing purposes
 	// and corresponding lines will be removed for final implementation
 	public PathFinder(ArrayList<Location> storesInSection, Location nearestCenter, boolean getMap, int mapCount) {
@@ -28,12 +27,9 @@ public class PathFinder {
 		
 		G = new Digraph(storesInSection.size());
 		nearestNeighbour(storesInSection, nearestCenter, G);
-				
+
 		//generate the map from the path created
 		new MapCreator(inOrderPath, G, mapCount, getMap);
-		
-		
-		
 	}
 	
 		
@@ -60,8 +56,10 @@ public class PathFinder {
 		storeList.remove(center);		
 		
 		for (int radius = 0; radius < 30; radius++) {
-			tempCenter =   storesInRadius(center,storeList,radius);	 // check if any stores are within current radius
+			if (storeList.isEmpty()) return;     //avoids unecessary loops caused by recursive call
 			
+			tempCenter =   storesInRadius(center,storeList,radius);	 // check if any stores are within current radius
+
 			if (tempCenter != null) {                               // if true, a store has been found
 				G.addEdge(center.getID(), tempCenter.getID());        // connect it to the current Center store
 				nearestNeighbour(storeList, tempCenter, G);						// recusive call
@@ -87,15 +85,4 @@ public class PathFinder {
 		}
 		return null;
 	}
-
-	
-//	public static void main(String[] args) {
-//		
-//		
-//		FileOperator fOp = new FileOperator("mcdonalds_locations.txt","Phoenix","AZ","mcdonalds");
-//		Location center = fOp.getCityLocation();
-//		AreaDivider ar = new AreaDivider(1, fOp.getStoreInRadius(center, 5), center);
-//		System.out.println(ar.getMinDist().toString());
-//		PathFinder a = new PathFinder(ar.getSections().get(0), ar.getMinDist(),true);
-//	}
 }

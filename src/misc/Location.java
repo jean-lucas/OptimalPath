@@ -84,9 +84,11 @@ public class Location {
 
 	@Override
 	public String toString() {
-		return String.format("%s: %s %25s %s %s %s (%4f %4f) ",
-				this.getName(),"&nbsp&nbsp&nbsp&nbsp&nbsp",this.getAddress(), this.getCity(), this.getState(),
-				"&nbsp&nbsp&nbsp&nbsp&nbsp",this.getLat(),this.getLon() );
+	String lineSpace = new String(new char[10]).replace("\0", "&nbsp"); // space seperator for HTML
+	
+		return String.format("%s: %s %25s %s %s %s (%4f ,  %4f) ",
+				this.getName(),lineSpace,this.getAddress(), this.getCity(), this.getState(),
+				lineSpace,this.getLat(),this.getLon() );
 		
 //		
 //		return String.format("%4f  %4f \t  %-20s  \t %-20s  %-5s  %-20s %n",

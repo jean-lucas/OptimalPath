@@ -14,7 +14,7 @@ import misc.Location;
 
 
 /**
- * This class is responsible for all the outputs to the client
+ * This class is responsible for all the outputs to the client (HTML file and googleMaps)
  */
 public class MapCreator {
 

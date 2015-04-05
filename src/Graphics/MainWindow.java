@@ -1,10 +1,8 @@
 package Graphics;
-/*************************************
- I've deicded not to include the program title in the main part of the GUI 
- because I believe that it would look better in the window's title.
- *************************************/
+
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +27,7 @@ import javax.swing.JTextField;
 import misc.Location;
 import ExceptionChecks.EmptyListException;
 import ExceptionChecks.InconsistentDatasetException;
+import ExceptionChecks.InvalidNumberOfDriversException;
 import FileOp.FileOperator;
 import PathFinding.AreaDivider;
 import PathFinding.PathFinder;
@@ -37,7 +36,12 @@ import PathFinding.PathFinder;
 public class MainWindow extends JFrame {
 	public static String store;
 	public static Object[] Stores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
+	
+	
 	public static void main(String[] args) {
+		
+		MainWindow win = new MainWindow();
+		
 		 //the following code prompts the user for their store before actually going to the program 
 		store = (String)JOptionPane.showInputDialog(
 				null,
@@ -46,19 +50,30 @@ public class MainWindow extends JFrame {
 				JOptionPane.PLAIN_MESSAGE,
 				null, Stores,
 				"Starbucks");
-		store = store.toLowerCase();
 		
-		MainWindow test = new MainWindow();
-			test.setVisible(true);
-			test.setTitle("Optimal Delivery Path");
-			test.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		try {  
+			store = store.toLowerCase(); 		// Client pressed X or Cancel, so quit the application
+		}
+		catch (NullPointerException e) {
+			return;
+		}
+		
+			win.setVisible(true);
+			win.setTitle("Optimal Delivery Path" +  " - " + store);
+			win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
-			test.setSize(250, 250);
-			test.setResizable(false);
-			test.pack();
+			win.setSize(500, 500);
+			win.setResizable(false);
+			win.pack();
 			
 
 	}
+	
+	
+	/*
+	 * All declaritons for GUI
+	 */
+	
 	private static final long serialVersionUID = 1L;
 	
   String[] defaultCityList = {"Please pick a state"};
@@ -75,7 +90,7 @@ public class MainWindow extends JFrame {
 	private JLabel cityLabel = new JLabel("City:");
 	private JLabel stateLabel = new JLabel("State:");
 	private JLabel driverLabel = new JLabel("Number of Drivers");
-	private JLabel radiusLabel = new JLabel("Radius:");
+	private JLabel radiusLabel = new JLabel("Radius (km):");
 	
 	
 	private JRadioButton driverOption1 = new JRadioButton("1");
@@ -126,8 +141,6 @@ public class MainWindow extends JFrame {
 		locationPanel.add(stateLabel);
 		locationPanel.add(statesBox);
 		
-		JPanel storePanel = new JPanel(new GridLayout(1,1));
-		storePanel.add(storeField);
 		
 		JPanel mapPanel = new JPanel(new GridLayout(2,2));
 		mapPanel.add(radiusLabel);
@@ -142,9 +155,16 @@ public class MainWindow extends JFrame {
 		Container container = getContentPane();
 		container.add(locationPanel,BorderLayout.NORTH); 
 		container.add(driversPanel,BorderLayout.WEST);
-		//container.add(storePanel,BorderLayout.CENTER);
 		container.add(mapPanel,BorderLayout.EAST);
 		container.add(goButton,BorderLayout.SOUTH);
+		
+		
+		
+		
+/**************************************************
+ * 	Action Listeners and their implementation		
+ ***************************************************/
+		
 		
 		storeMI.addActionListener(new StoreSelectListener()); 
 		exitMI.addActionListener(new QuitListener());
@@ -163,9 +183,7 @@ public class MainWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			
 			try {
-				//String storeName = ((String) storeField.getSelectedItem()).toLowerCase();
 				String fileName = store +"_locations.txt";
-				//String fileName = storeName +"_locations.txt";
 				String cityName = (String) cityField.getSelectedItem();
 				String state =  (String) statesBox.getSelectedItem();
 			
@@ -179,18 +197,24 @@ public class MainWindow extends JFrame {
 				if (driverOption3.isSelected())  numOfDrivers = 4;
 				
 				// check valid radius
-				if (radius <= 0 || radius > 40) throw new IllegalArgumentException();
+				if (radius <= 0 || radius > 30) throw new IllegalArgumentException();
 				
+				// check valid number of drivers
+				if (numOfDrivers < 1 || numOfDrivers > 4) throw new InvalidNumberOfDriversException();
 	
+				
 				FileOperator fileOp = new FileOperator(fileName, cityName, state, store);
 				Location center = fileOp.getCityLocation();		
 				
-				ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	//get ALL valid stores to visit
+			 //get ALL valid stores to visit
+				ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	
 				
-				AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);	// this will create a list of list of valid stores to visit
+			  // this will create a list of list of valid stores to visit
+				AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);	
 				
 				//checking for valid sections
 				if (area.getSections().isEmpty()) throw new EmptyListException();
+				
 				for (ArrayList<Location> section: area.getSections()) {
 					if (section.isEmpty()) continue;
 					
@@ -198,6 +222,13 @@ public class MainWindow extends JFrame {
 				}
 			}
 			
+			
+			
+			// 	********    EXCEPTION HANDLING   ************** //
+			
+			catch (InvalidNumberOfDriversException e1) {
+				JOptionPane.showMessageDialog(null, "Please select number of drivers!");
+			}
 			catch (InconsistentDatasetException e1) {
 				JOptionPane.showMessageDialog(null, "Our apologies!\nThe city selected was not \n"
 																							+ "found in our cities database.");
@@ -207,7 +238,7 @@ public class MainWindow extends JFrame {
 																						+ "Try again with a bigger radius or a new city.");
 			}
 			catch (IllegalArgumentException e1) {
-				JOptionPane.showMessageDialog(null, "Radius must be between 1 and 40. ");
+				JOptionPane.showMessageDialog(null, "Radius must be between 1 and 30. ");
 			}
 			catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, "Something went wrong! \nPlease check all inputs.");
