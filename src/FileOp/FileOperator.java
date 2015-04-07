@@ -128,7 +128,9 @@ public class FileOperator {
 	/***********************************************************************************************
 	 *               Method responsible for finding ALL cities within a state
 	 ***********************************************************************************************/	
-	
+	/**
+	 * Each element on the map corresponds to a state and is linked to a hashset of all cities in that state
+	 */
 	public Map<String, LinkedHashSet<String>> getAllCitiesByState() {
 		
 		
@@ -148,9 +150,11 @@ public class FileOperator {
 				String city = currLine[1].trim(); 
 				String state = currLine[0].trim();		
 				
-				if (state.equalsIgnoreCase(currentState))
+				
+				if (state.equals(currentState))  
 					cities.add(city);
 				
+					
 				else {
 					tempMap.put(currentState, cities);
 					cities = new LinkedHashSet<String>();	//clear the current list
@@ -158,13 +162,18 @@ public class FileOperator {
 					currentState = state;
 				}
 			}
+			tempMap.put(currentState, cities);
+			
+			
+
 			in.close();
 		}
 		
+	
 		catch (FileNotFoundException e) {
 			System.out.println(e.getLocalizedMessage());
 		}
-		
+
 		return tempMap;
 	}
 	
@@ -199,7 +208,7 @@ public class FileOperator {
 			
 			System.out.println("NUMBER OF ENTRIES: " + fileSize);						//make sure the sorted file still has numOfEntries info
 			
-			String[] inputArray = new String[fileSize-1];											//will hold every entry of the textfile
+			String[] inputArray = new String[fileSize];											//will hold every entry of the textfile
 			
 			int lineNumber = 0;
 			while (in.hasNext()) {
@@ -321,7 +330,7 @@ public class FileOperator {
 		
 		in.close();
 		
-		// if city not found, return null
+		// if city not found
 		return null;
 	}
 	
@@ -470,6 +479,7 @@ public class FileOperator {
 		}
 		return -1;
 	}
+	
 }
 
 	

@@ -11,24 +11,27 @@ import Map.MapCreator;
  * 
  * TODO:  Try to find ways to make it more efficient
  */
+
+
+
 public class PathFinder {
 
+	private final int MAXRADIUS = 30;   
 	private Digraph G;
-	private ArrayList<Location> inOrderPath = new ArrayList<Location>();
+	private ArrayList<Location> inOrderPath = new ArrayList<Location>();		//keeps track of stores to visit in order
 	
-	// anything labeled with " //remove " is just there for testing purposes
-	// and corresponding lines will be removed for final implementation
 	public PathFinder(ArrayList<Location> storesInSection, Location nearestCenter, boolean getMap, int mapCount) {
 		
 		
-		// give each location an id # from 0..size     
+		// give each location an id # from 0..size, this will help label nodes in digraph  
 		for (int i = 0; i < storesInSection.size(); i++) 
 			storesInSection.get(i).setID(i);
 		
 		G = new Digraph(storesInSection.size());
+		
 		nearestNeighbour(storesInSection, nearestCenter, G);
 
-		//generate the map from the path created
+		//generate output files from the path created
 		new MapCreator(inOrderPath, G, mapCount, getMap);
 	}
 	
@@ -51,18 +54,17 @@ public class PathFinder {
 		
 		Location tempCenter = null;
 		
-		center.isMarked = true;		
-		inOrderPath.add(center);
+		this.inOrderPath.add(center);
 		storeList.remove(center);		
 		
-		for (int radius = 0; radius < 30; radius++) {
+		for (int radius = 0; radius < MAXRADIUS; radius++) {
 			if (storeList.isEmpty()) return;     //avoids unecessary loops caused by recursive call
 			
-			tempCenter =   storesInRadius(center,storeList,radius);	 // check if any stores are within current radius
+			tempCenter =  storesInRadius(center,storeList,radius);	 // check if any stores are within current radius
 
 			if (tempCenter != null) {                               // if true, a store has been found
 				G.addEdge(center.getID(), tempCenter.getID());        // connect it to the current Center store
-				nearestNeighbour(storeList, tempCenter, G);						// recusive call
+				nearestNeighbour(storeList, tempCenter, G);					
 			}
 		}
 	}
@@ -70,7 +72,9 @@ public class PathFinder {
 	
 	
 	/**
-	 * Finds the FIRST Location/store that is within the radius
+	 * Finds the FIRST Location/store that is within the radius,
+	 * If two or more stores are found within the radius it will pick the first one it finds,
+	 * not necessarily the closest one.
 	 * @param center	Position to calculate distance from
 	 * @param stores	List of valid stores to measure distances
 	 * @param r		radius bound
@@ -83,6 +87,7 @@ public class PathFinder {
 			if (center.getDistance(store) <= r*1000) // multiply by 1000 to get meters
 				return store;
 		}
+		
 		return null;
 	}
 }

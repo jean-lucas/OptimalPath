@@ -59,7 +59,7 @@ public class MapCreator {
 				if (line.equals("<title>")) System.out.println("Path #" +count);
 				
 			
-				if (line.equals("<body>")) { 										 // this is where all the good stuff goes..
+				if (line.equals("<body>")) { 				// this is where all the good stuff goes..
 					
 					System.out.println("<strong>In order path for driver #"+count+" "
 							+ "</strong><br><br><hr style='width:85%;'/>");
@@ -94,7 +94,7 @@ public class MapCreator {
 	 * A map representaion of the route will only be created if the client desires.
 	 * If so, this function will generate a URL with the syntax of Google Maps URL.
 	 * 
-	 * The only issue is that the number of stores generated on this map can be at MOST 25.
+	 * IMPORTANT: number of stores generated on this map can be at MOST 25 (issue with google maps)
 	 */
 	private void generateGoogleMap() {
 		String[] points = new String[list.size()];		

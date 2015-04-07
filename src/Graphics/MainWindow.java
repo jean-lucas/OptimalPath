@@ -2,7 +2,6 @@ package Graphics;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,13 +33,22 @@ import PathFinding.PathFinder;
 
 
 public class MainWindow extends JFrame {
-	public static String store;
-	public static Object[] Stores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
+	
+	// static declaritions needed
+	
+	private static final long serialVersionUID = 1L;
+	private static String[] defaultStores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
+	private static Map<String, LinkedHashSet<String>> citiesByState;		//used to represent a list of cities by respecitve state
+	private static String store;
+	private static MainWindow win;
+	
+	
+	
 	
 	
 	public static void main(String[] args) {
 		
-		MainWindow win = new MainWindow();
+		win = new MainWindow();
 		
 		 //the following code prompts the user for their store before actually going to the program 
 		store = (String)JOptionPane.showInputDialog(
@@ -48,12 +56,20 @@ public class MainWindow extends JFrame {
 				"Select your store",
 				"Store Selection",
 				JOptionPane.PLAIN_MESSAGE,
-				null, Stores,
+				null, defaultStores,
 				"Starbucks");
 		
 		try {  
 			store = store.toLowerCase(); 		// Client pressed X or Cancel, so quit the application
+			
+			//populate the citesByState based on which store was selected
+			String fileName = store+ "_locations.txt";
+			FileOperator fOp = new FileOperator(fileName); // this fOp should ONLY be used for constructing the citiesByState map
+			citiesByState = fOp.getAllCitiesByState();
 		}
+		
+		
+		//exit the program
 		catch (NullPointerException e) {
 			return;
 		}
@@ -65,24 +81,22 @@ public class MainWindow extends JFrame {
 			win.setSize(500, 500);
 			win.setResizable(false);
 			win.pack();
-			
-
 	}
+	
+	
 	
 	
 	/*
 	 * All declaritons for GUI
 	 */
 	
-	private static final long serialVersionUID = 1L;
 	
-  String[] defaultCityList = {"Please pick a state"};
-  String[] defaultStores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
+  private String[] defaultCityList = {"Please pick a state"};
   
 	private  String [] states = {"--","AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA"
 			,"HI","ID","IL","IN","IA","KS","KY","LA","ME",
 			"MD","MA","MI","MN","MS","MO","MT","NE","NV",
-			"NH","HJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
+			"NH","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
 			"TX","UT","VT","VA","WA","WV","WI","WY"};
 	
 	private JButton goButton = new JButton("GO");
@@ -101,12 +115,12 @@ public class MainWindow extends JFrame {
 	
 	private JTextField radiusField = new JTextField(15); 
 	private JComboBox<String> cityField = new JComboBox<String>(defaultCityList);
-	private JComboBox<String> storeField = new JComboBox<String>(defaultStores);
 	
 	private JMenuItem exitMI = new JMenuItem("Exit");
 	private JMenuItem storeMI = new JMenuItem("Set Store");
 	private JMenuItem instructMI = new JMenuItem("Instructions");
 	private JComboBox<String> statesBox = new JComboBox<>(states); 
+	
 	
 	
 	public MainWindow(){
@@ -136,19 +150,17 @@ public class MainWindow extends JFrame {
 		driversPanel.add(driverOption3);
 		
 		JPanel locationPanel = new JPanel(new GridLayout(1,1));
-		locationPanel.add(cityLabel);
-		locationPanel.add(cityField);
 		locationPanel.add(stateLabel);
 		locationPanel.add(statesBox);
+		locationPanel.add(new JLabel());
+		locationPanel.add(cityLabel);
+		locationPanel.add(cityField);
 		
 		
 		JPanel mapPanel = new JPanel(new GridLayout(2,2));
 		mapPanel.add(radiusLabel);
 		mapPanel.add(radiusField);
 		mapPanel.add(mapCheckButton);
-		
-		
-		
 		
 		
 		
@@ -177,6 +189,8 @@ public class MainWindow extends JFrame {
 	
 
 
+	
+	// ********    GO BUTTON   ***********
 	
 	private class goListener implements ActionListener {
 		@Override
@@ -246,25 +260,34 @@ public class MainWindow extends JFrame {
 		}
 	}
 		
+	
+	
+	
+	// ********    STATE SELECTION   ***********
+	
 	//Auto Fills the cityField ComboBox depending on current state selected
 	private class StateBoxListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+				
+			try {
+				String stateSelected = (String) statesBox.getSelectedItem();
+				LinkedHashSet<String> cities = citiesByState.get(stateSelected);		// get the arrayList of all cities repr. by stateSelected
+
+				//clear the field, and add all new city names
+				cityField.removeAllItems();		
+				for (String c: cities) 
+					cityField.addItem(c);
+			}
 			
-			String fileName = store+ "_locations.txt";
-			FileOperator fOp = new FileOperator(fileName); // this fOp should ONLY be used for constructing the citiesByState map
-			
-		  Map<String, LinkedHashSet<String>> citiesByState = fOp.getAllCitiesByState();		//used to represent a list of cities by respecitve state
-			
-			String stateSelected = (String) statesBox.getSelectedItem();
-			LinkedHashSet<String> cities = citiesByState.get(stateSelected);		// get the arrayList of all cities repr. by stateSelected
-			
-			//clear the field, and add all new city names
-			cityField.removeAllItems();		
-			for (String c: cities) 
-				cityField.addItem(c);
+			catch (Exception e1) {
+				cityField.addItem("No cities found...");
+			}
 		}
 	}
 	
+	
+	
+	// quit button
 	private class QuitListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			System.exit(0);
@@ -272,27 +295,29 @@ public class MainWindow extends JFrame {
 			}
 		}
 		
+	
+	// help button
 	private class InstructListner implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			JOptionPane.showMessageDialog(null,
 					"Coming Soon...");
 			}
 		}
+	
+	
+	
+	// change stores button
 	private class StoreSelectListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			store = (String)JOptionPane.showInputDialog(
-					null,
-					"Select your store",
-					"Store Selection",
-					JOptionPane.PLAIN_MESSAGE,
-					null, Stores,
-					"Starbucks");
-			store = store.toLowerCase();
+			
+			// close the window and restart program
+			win.dispose();
+			main(null);
 		}
 	}
-	
-	
-	
-	
 }
+	
+	
+	
+
 

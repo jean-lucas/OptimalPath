@@ -8,41 +8,35 @@ import misc.Location;
  * The area of the circle created by the radius is divided accordingly
  * And the the optimal path algorithm will run on each sub section
  * 
- * TODO: find efficent way to return these sections
- *
  */
 public class AreaDivider {
 	
 	
-	private Helper h  = new Helper();
 	
-	private ArrayList<Location> sectionNorth = new ArrayList<Location>();
+	private ArrayList<Location> sectionNorth = new ArrayList<Location>();  
 	private ArrayList<Location> sectionSouth = new ArrayList<Location>();
 	private ArrayList<Location> sectionEast = new ArrayList<Location>();
 	private ArrayList<Location> sectionWest = new ArrayList<Location>();
+	
+	ArrayList<ArrayList<Location>> sections = new ArrayList<ArrayList<Location>>();
 	
 	private int numOfDrivers; 
 	
 	
 	/**
 	 * Create a valid sections from constructor 
-	 * @param numOfDrivers
-	 * @param validStores
-	 * @param base
 	 */
-	public AreaDivider(int numOfDrivers,ArrayList<Location> validStores, Location base) {
+	public AreaDivider(int numOfDrivers, ArrayList<Location> validStores, Location base) {
 		this.numOfDrivers = numOfDrivers;
 		divideStores(validStores, base);
 	}
 	
 	
 	public ArrayList<ArrayList<Location>> getSections() {
-		return h.sections;
+		return sections;
 	}
 	
-	public Location getMinDist() {
-		return h.getMinDistNorth();
-	}
+
 	
 	/**
 	 * 
@@ -63,23 +57,15 @@ public class AreaDivider {
 	}
 	
 	/**
-	 * Creates one section
-	 * the closeset location to center will be identified as the minDistNorth
-	 */
+	 * Creates one section, trivial case  */
 	private void divideByOne(ArrayList<Location> validStores, Location base) {
-		
-		h.sections.add(validStores);
-		
-		for (Location store: validStores) {
-			if (base.getDistance(store) < base.getDistance(h.getMinDistNorth())) {
-				h.setMinDistNorth(store);
-			}
-		}
+		sections.add(validStores);
 	}
 	
 	/**
 	 * Creates two sections North & South  OR East & West
-	 * The choice for which set of section to use, is determined by which set is more balanced
+	 * The choice for which set of section to use, is determined by which set of two section is 
+	 * more balanced. 
 	 */
 	private void divideByTwo(ArrayList<Location> validStores, Location base) {
 		
@@ -105,67 +91,59 @@ public class AreaDivider {
 		// check which two sections should be used, by seeing which pair has the smallest differece
 		// it can either be split north to south,  or east to west
 		if (Math.abs(sectionNorth.size() - sectionSouth.size()) < Math.abs(sectionEast.size()) - sectionWest.size()) {
-			h.sections.add(sectionNorth);
-			h.sections.add(sectionSouth);
+			sections.add(sectionNorth);
+			sections.add(sectionSouth);
 		}
 		
 		else {
-			h.sections.add(sectionEast);
-			h.sections.add(sectionWest);
+			sections.add(sectionEast);
+			sections.add(sectionWest);
 		}
-
-
 	}
+	
+
 	
 	
 	/**
 	 * Divides the set of stores into 4 subsections
+	 * North is top right of circle
+	 * East is bottom right of circle
+	 * South is bottom left of circle
+	 * West is top left of circle
+	 * 
 	 */
 	private void divideByFour(ArrayList<Location> validStores, Location base) {
 		final double LAT = base.getLat();
 		final double LON = base.getLon();
 	
-		
+		// Latitude increases from North to South
+		// Longitude decreases from east to west
 		
 		for (Location store: validStores) {
 			double tempLat = store.getLat();
 			double tempLon = store.getLon();
 			
-			double tempDist = base.getDistance(store);
-			
 			if (tempLat > LAT) {
-				if (tempLon < LON) {
+				if (tempLon < LON) 
 					sectionWest.add(store);		// top left circle
-					if (tempDist < base.getDistance(h.getMinDistWest())) {
-						h.setMinDistWest(store);
-					}
-				}
-				else {
+				
+				else 
 					sectionNorth.add(store); // top right circle
-					if (tempDist < base.getDistance(h.getMinDistNorth())) {
-						h.setMinDistNorth(store);
-					}
-				}
 			}
 			
 			else { 
 				if (tempLon < LON)
 					sectionSouth.add(store);	// bottom left
-				if (tempDist < base.getDistance(h.getMinDistSouth())) {
-					h.setMinDistSouth(store);
-				}
+				
 				else
 					sectionEast.add(store);  // bottom right
-				if (tempDist < base.getDistance(h.getMinDistEast())) {
-					h.setMinDistEast(store);
-				}
 			}
 		}
 		
-		h.sections.add(sectionEast);
-		h.sections.add(sectionNorth);
-		h.sections.add(sectionSouth);
-		h.sections.add(sectionWest);
+		sections.add(sectionEast);
+		sections.add(sectionNorth);
+		sections.add(sectionSouth);
+		sections.add(sectionWest);
 		
 	}
 
