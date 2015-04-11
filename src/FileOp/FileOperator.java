@@ -9,14 +9,11 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 import misc.Location;
-import ExceptionChecks.EmptyListException;
 import ExceptionChecks.InconsistentDatasetException;
 import StringSorts.LSDsort;
 import StringSorts.MSDsort;
@@ -133,6 +130,9 @@ public class FileOperator {
 	 */
 	public Map<String, LinkedHashSet<String>> getAllCitiesByState() {
 		
+		//A map will help us keep each state associated with a list of cities for that state, 
+		//and to avoid repetition in this list of cities, and also maintain their relative ordering 
+		//we use a LinkedHashSet
 		
 		Map<String, LinkedHashSet<String>> tempMap = new HashMap<String, LinkedHashSet<String>>();
 	
@@ -150,7 +150,6 @@ public class FileOperator {
 				String city = currLine[1].trim(); 
 				String state = currLine[0].trim();		
 				
-				
 				if (state.equals(currentState))  
 					cities.add(city);
 				
@@ -159,12 +158,10 @@ public class FileOperator {
 					tempMap.put(currentState, cities);
 					cities = new LinkedHashSet<String>();	//clear the current list
 					cities.add(city);
-					currentState = state;
+					currentState = state;		
 				}
 			}
 			tempMap.put(currentState, cities);
-			
-			
 
 			in.close();
 		}
@@ -411,7 +408,8 @@ public class FileOperator {
 	
 	
 	/**
-	 * Populates the validLocation array
+	 * index represents the first line of which the desired city is printed in the textfile,
+	 * with this information we can populate the validLocations arrayList
 	 * 
 	 * @param center	Location object 
 	 * @param radius  max distance from center allowed
@@ -432,11 +430,10 @@ public class FileOperator {
 		boolean stillInCity = center.getCity().equalsIgnoreCase(locations[index].getCity());
 		
 		while (stillInCity) {
-			if (center.getDistance(locations[index]) <= radius*1000) {
+			if (center.getDistance(locations[index]) <= radius*1000) 
 				validLocations.add(locations[index]);
-			}
-			stillInCity = center.getCity().equalsIgnoreCase(locations[++index].getCity());
 			
+			stillInCity = center.getCity().equalsIgnoreCase(locations[++index].getCity());
 		}
 		return validLocations;
 	}

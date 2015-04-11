@@ -31,7 +31,13 @@ import FileOp.FileOperator;
 import PathFinding.AreaDivider;
 import PathFinding.PathFinder;
 
-
+/**
+ * TODO: Fix the size of radius input box
+ * TODO: Add a title to the GUI window
+ * TODO: Remove static declarations
+ * 
+ *
+ */
 public class MainWindow extends JFrame {
 	
 	// static declaritions needed
@@ -123,7 +129,8 @@ public class MainWindow extends JFrame {
 	
 	
 	
-	public MainWindow(){
+	
+	private MainWindow(){
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.add(storeMI);
 		fileMenu.add(exitMI);

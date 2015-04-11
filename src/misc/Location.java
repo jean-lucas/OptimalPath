@@ -1,15 +1,13 @@
 package misc;
+
 /**
- * @author Jean Lucas
- *
  * Represent a unique store on a map, with attributes such as:
  * chain name, address, and latitude and longitude points.
  * 
- * TODO: implement an alternative of toString() method
  */
 
 public class Location {
-	private final double R = 6378100;
+	private final double R = 6378100;			// radius of the earth in meters
 	private double latidude;		// latitude point with format XX.xxxx
 	private double longitude;		// longitude point with formath YY.yyyy
 	private String storeName; 		// Name of store (Starbucks, WalMart, etc..)
@@ -17,7 +15,6 @@ public class Location {
 	private String city;
 	private String state;
 	private int ID; 			// each location has an unique ID, helps when using graph algorithms
-	public boolean isMarked = false;
 	
 	// standard constructor for a Location object
 	public Location(double lat, double lon, String name, String address, String city, String state, int id) {
@@ -32,6 +29,7 @@ public class Location {
 	
 
 	// secondary constructor for city Locations where the ID, name, and address are irrelevant
+	// useful when creating Location objects of cities, rather than stores
 	public Location(double lat, double lon, String city, String state) {
 		this(lat, lon, "", "", city, state, 0);
 	}
@@ -82,34 +80,22 @@ public class Location {
 			return (int) Math.floor(R*c);
 		}
 
+		
+		
+	/**
+	 * This toString method is designed to be used with HTML format,
+	 * in order to add spaces between text, we need to write &nbsp as many times as the
+	 * number of spaces we wish to have between to words.
+	 */
 	@Override
 	public String toString() {
-	String lineSpace = new String(new char[10]).replace("\0", "&nbsp"); // space seperator for HTML
+	String lineSpace = new String(new char[10]).replace("\0", "&nbsp"); // space seperator for HTML, this allows string repetition
 	
-		return String.format("%s: %s %25s %s %s %s (%4f ,  %4f) ",
+		return String.format("%s: %s %s %s %s %s (%4f , %4f) ",
 				this.getName(),lineSpace,this.getAddress(), this.getCity(), this.getState(),
 				lineSpace,this.getLat(),this.getLon() );
 		
-//		
-//		return String.format("%4f  %4f \t  %-20s  \t %-20s  %-5s  %-20s %n",
-//												 this.getLat(),this.getLon(), this.getName(), this.getCity(), this.getState(), this.getAddress() );
 	}
-	
-	
-
-	@Override 
-	public boolean equals(Object obj) {
-		if (obj == null) return false;																		
-		if (!(obj instanceof Location)) return false;										
-	
-		Location objTest = (Location) obj;	//temporary Locatiob object for testing purposes
-		
-		if (objTest.getID() == this.getID()) 
-			return true;
-		
-		return false;
-	}
-	
 }
 
 
