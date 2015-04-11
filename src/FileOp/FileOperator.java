@@ -394,7 +394,7 @@ public class FileOperator {
 				
 		case "starbucks":
 				position = binarySearchLocation(startbucksLocations, targetLocation);
-				return getStoreInRadius(center,radius,startbucksLocations,position);
+				return getStoreInRadius(center,radius,startbucksLocations,position-2);
 			
 		case "walmart":
 				position = binarySearchLocation(walmartLocations, targetLocation);
@@ -425,10 +425,9 @@ public class FileOperator {
 		//city not in locations[], return empty list
 		if (index < 0 ) return validLocations;
 		
-		
 		//once this is false we can stop searching and break out of the loop
 		boolean stillInCity = center.getCity().equalsIgnoreCase(locations[index].getCity());
-		
+
 		while (stillInCity) {
 			if (center.getDistance(locations[index]) <= radius*1000) 
 				validLocations.add(locations[index]);

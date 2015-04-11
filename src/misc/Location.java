@@ -77,7 +77,10 @@ public class Location {
 			
 			double val1 = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
 			double c = 2*Math.asin(Math.sqrt(val1));
-			return (int) Math.floor(R*c);
+			int result = (int) Math.floor(R*c);
+			
+			if (result < 1000) result = 1000;
+			return result;
 		}
 
 		
@@ -95,6 +98,11 @@ public class Location {
 				this.getName(),lineSpace,this.getAddress(), this.getCity(), this.getState(),
 				lineSpace,this.getLat(),this.getLon() );
 		
+	}
+	
+	public static void main(String[] args) {
+		Location b = new Location(34.78601,-86.95990,"","");
+		b.getDistance(new Location(34.78506,-86.94966,"",""));
 	}
 }
 

@@ -218,7 +218,7 @@ public class MainWindow extends JFrame {
 				if (driverOption3.isSelected())  numOfDrivers = 4;
 				
 				// check valid radius
-				if (radius <= 0 || radius > 30) throw new IllegalArgumentException();
+				if (radius <= 0 || radius > 80) throw new IllegalArgumentException();
 				
 				// check valid number of drivers
 				if (numOfDrivers < 1 || numOfDrivers > 4) throw new InvalidNumberOfDriversException();
@@ -229,17 +229,17 @@ public class MainWindow extends JFrame {
 				
 			 //get ALL valid stores to visit
 				ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	
-				
+			
 			  // this will create a list of list of valid stores to visit
 				AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);	
-				
+		
 				//checking for valid sections
 				if (area.getSections().isEmpty()) throw new EmptyListException();
 				
 				for (ArrayList<Location> section: area.getSections()) {
 					if (section.isEmpty()) continue;
 					
-					new PathFinder(section, section.get(0), getMap, mapCount++);
+					new PathFinder(section, center, getMap, mapCount++);
 				}
 			}
 			
