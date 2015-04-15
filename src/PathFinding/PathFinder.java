@@ -17,7 +17,6 @@ import Map.MapCreator;
 public class PathFinder {
 
 	private final int MAXRADIUS = 30;   
-	private Digraph G;
 	private ArrayList<Location> inOrderPath = new ArrayList<Location>();		//keeps track of stores to visit in order
 	
 	public PathFinder(ArrayList<Location> storesInSection, Location nearestCenter, boolean getMap, int mapCount) {
@@ -27,12 +26,11 @@ public class PathFinder {
 		for (int i = 0; i < storesInSection.size(); i++) 
 			storesInSection.get(i).setID(i);
 		
-		G = new Digraph(storesInSection.size());
 		
-		nearestNeighbour(storesInSection, nearestCenter, G);
+		nearestNeighbour(storesInSection, nearestCenter);
 
 		//generate output files from the path created
-		new MapCreator(inOrderPath, G, mapCount, getMap);
+		new MapCreator(inOrderPath, mapCount, getMap);
 	}
 	
 		
@@ -47,7 +45,7 @@ public class PathFinder {
 	 * @param center			position to calculate distance from
 	 * @param G						Digraph
 	 */
-	public void nearestNeighbour(ArrayList<Location> storeList, Location center, Digraph G) {
+	public void nearestNeighbour(ArrayList<Location> storeList, Location center) {
 		
 		int size = storeList.size();
 		if (size == 0) return;		// base case
@@ -63,8 +61,7 @@ public class PathFinder {
 			tempCenter =  storesInRadius(center,storeList,radius);	 // check if any stores are within current radius
 
 			if (tempCenter != null) {                               // if true, a store has been found
-				G.addEdge(center.getID(), tempCenter.getID());        // connect it to the current Center store
-				nearestNeighbour(storeList, tempCenter, G);					
+				nearestNeighbour(storeList, tempCenter);					
 			}
 		}
 	}

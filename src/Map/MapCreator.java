@@ -19,13 +19,11 @@ import misc.Location;
 public class MapCreator {
 
 	ArrayList<Location> list;
-	Digraph G;
 	int count;
 	boolean getMap;
 	
-	public MapCreator(ArrayList<Location> Storelist, Digraph g, int mapCount, boolean b) {
+	public MapCreator(ArrayList<Location> Storelist,  int mapCount, boolean b) {
 		list = Storelist;
-		G = g;
 		count = mapCount;
 		getMap = b;
 		setup();
