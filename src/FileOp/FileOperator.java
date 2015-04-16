@@ -394,7 +394,7 @@ public class FileOperator {
 				
 		case "starbucks":
 				position = binarySearchLocation(startbucksLocations, targetLocation);
-				return getStoreInRadius(center,radius,startbucksLocations,position-2);
+				return getStoreInRadius(center,radius,startbucksLocations,position);  //-2 ?
 			
 		case "walmart":
 				position = binarySearchLocation(walmartLocations, targetLocation);
@@ -421,7 +421,6 @@ public class FileOperator {
 		
 		ArrayList<Location> validLocations = new ArrayList<Location>();
 		
-		
 		//city not in locations[], return empty list
 		if (index < 0 ) return validLocations;
 		
@@ -429,7 +428,7 @@ public class FileOperator {
 		boolean stillInCity = center.getCity().equalsIgnoreCase(locations[index].getCity());
 
 		while (stillInCity) {
-			if (center.getDistance(locations[index]) <= radius*1000) 
+			if (center.getDistance(locations[index]) <= radius*1000)  
 				validLocations.add(locations[index]);
 			
 			stillInCity = center.getCity().equalsIgnoreCase(locations[++index].getCity());
@@ -451,12 +450,11 @@ public class FileOperator {
 		int hi = n-1;
 		int lo = 0;
 		int mid = -1;
-		
+
 		while (lo <= hi) {
 			mid = lo + (hi - lo) / 2;
-
 			String temp = a[mid].getState()+a[mid].getCity();		// a[mid] corresponds to a location object
-			
+		
 			if (temp.compareToIgnoreCase(target) > 0)
 				hi = mid-1;	
 			
@@ -468,8 +466,10 @@ public class FileOperator {
 				for (int i = mid; i >= 0; i--) {
 					temp = a[i].getState()+a[i].getCity();
 					if (temp.compareToIgnoreCase(target) != 0)
-						return mid = i+3;
+						return mid = i+1;					
 				}
+			// if target is the first element of the list... should probably check for this before entering while loop
+				return 0;		
 			}
 			
 		}

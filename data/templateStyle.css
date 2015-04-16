@@ -42,22 +42,36 @@ body {
  	text-align: center;
  }
  
- table {
+ 
+ 
+ .infoTable {
  	margin: 0 auto;
  }
- table td {
+ .infoTable td {
  	text-align: left;
  }
  
+ 	
  
- .pathList {
+ .pathTable {
  	position: relative;
- 	width: 100%;
  	padding: 20px 0 0 40px;
  	color: white;
  }
- 	
- 	
+ 
+ .pathTable td {
+ 	text-align: left;
+ }
+ 
+ .pathTable td:first-child {
+ 	text-align: center;
+ }
+ 
+.pathTable th:last-child, td:last-child {
+	width: 200px;
+    text-align: right;
+}
+
  	
  	
  	

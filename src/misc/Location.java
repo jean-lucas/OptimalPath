@@ -94,9 +94,12 @@ public class Location {
 	public String toString() {
 	String lineSpace = new String(new char[10]).replace("\0", "&nbsp"); // space seperator for HTML, this allows string repetition
 	
-		return String.format("%s: %s %s %s %s %s (%4f , %4f) ",
-				this.getName(),lineSpace,this.getAddress(), this.getCity(), this.getState(),
-				lineSpace,this.getLat(),this.getLon() );
+	return String.format("%s %s  %s  %s %s %4f , %4f %s ",
+			"<td>",this.getAddress(),"</td><td>", this.getCity(), "</td><td>",
+			this.getLat(),this.getLon(),"</td>");
+//		return String.format("%s: %s %s %s %s %s (%4f , %4f) ",
+//				this.getName(),lineSpace,this.getAddress(), this.getCity(), this.getState(),
+//				lineSpace,this.getLat(),this.getLon() );
 		
 	}
 	

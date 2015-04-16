@@ -226,16 +226,15 @@ public class MainWindow extends JFrame {
 				
 				FileOperator fileOp = new FileOperator(fileName, cityName, state, store);
 				Location center = fileOp.getCityLocation();		
-				
-			 //get ALL valid stores to visit
+			 
+				//get ALL valid stores to visit
 				ArrayList<Location> validStores = fileOp.getStoreInRadius(center, radius);	
-			
-			  // this will create a list of list of valid stores to visit
+
+				// this will create a list of list of valid stores to visit
 				AreaDivider area = new AreaDivider(numOfDrivers, validStores, center);	
 		
 				//checking for valid sections
 				if (area.getSections().isEmpty()) throw new EmptyListException();
-				
 				for (ArrayList<Location> section: area.getSections()) {
 					if (section.isEmpty()) continue;
 					

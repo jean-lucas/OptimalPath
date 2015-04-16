@@ -65,21 +65,27 @@ public class MapCreator {
 					
 					// Creating info about the path in a table format
 					System.out.println("<div class='pathInfo'>");
-					System.out.println("<table cellpadding='3' cellspacing='10'>");
+					System.out.println("<table class='infoTable' cellpadding='3' cellspacing='10'>");
 					System.out.println("<tr><td>City: </td><td> " + list.get(0).getCity()+ " - " + list.get(0).getState() + "</td></tr>");
 					System.out.println("<tr><td>Number of stops: </td><td>  " + (list.size()-1) + "</td></tr>");
 					System.out.println("<tr><td>Store: </td><td> " + list.get(1).getName().toUpperCase()+ "</td></tr>");
 					System.out.println("</table>");
+					
+//TODO: get starting address --- System.out.println("Starting address: " + list.get(0).getAddress());
+					
 					System.out.println("</div>");	
+					
 					
 					list.remove(0);
 					
-					//create ordered list of path
+					//create ordered table/list of path
 					System.out.println("<div class='pathList'>");	
-					System.out.println("<ol start='1'>");
-					
+					System.out.println("<table class='pathTable' cellspacing='15'>");
+					System.out.println("<tr><th>Order</th><th>Address</th><th></th><th>Latitude , Longitude</th></tr>");
+					int i = 1;
 					for (Location c: list) {
-						System.out.println("<li>" + c.toString() +"</li>");			// creating list items for each stop in route
+					// creating table row for each stop in route
+						System.out.println("<tr>" + "<td>"+(i++)+"</td>" + c.toString() +"</tr>");			
 					}
 					
 					System.out.println("</ol>");
