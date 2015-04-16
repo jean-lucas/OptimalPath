@@ -1,0 +1,64 @@
+body {
+    overflow-y: scroll;
+    overflow-x: scroll;
+    padding: 0;
+    margin: 0;
+    background-color: #253939;
+}
+
+
+.bodyHeader {
+	width: 100%;
+	height: 40px;
+	text-align: center;
+	font-size: 30px;
+	font-variant: small-caps;
+	color: #DFE2DB;
+}
+
+
+/* ---  Center text vertically  --- */
+.bodyHeader p {
+    position: relative;
+    top: 50%; 
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+ }
+ 
+ 
+ .hrStyle {
+ 	width:85%; 
+ 	height: 1px;
+ 	background-color:#ff9c5f;
+ 	border: 0;
+ }
+ 
+ 
+ .pathInfo {
+ 	position: relative;
+ 	width: 100%;
+ 	color: white;
+ 	font-size: 16px;
+ 	text-align: center;
+ }
+ 
+ table {
+ 	margin: 0 auto;
+ }
+ table td {
+ 	text-align: left;
+ }
+ 
+ 
+ .pathList {
+ 	position: relative;
+ 	width: 100%;
+ 	padding: 20px 0 0 40px;
+ 	color: white;
+ }
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	

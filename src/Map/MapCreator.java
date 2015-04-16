@@ -2,13 +2,11 @@ package Map;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import PathFinding.Digraph;
 import misc.Location;
 
 
@@ -59,9 +57,25 @@ public class MapCreator {
 			
 				if (line.equals("<body>")) { 				// this is where all the good stuff goes..
 					
-					System.out.println("<strong>In order path for driver #"+count+" "
-							+ "</strong><br><br><hr style='width:85%;'/>");
-				
+					System.out.println("<div class='bodyHeader'>");
+					System.out.println("<p><strong>in order path for driver #" +count+ " " + "</strong></p>");
+					System.out.println("</div>");
+					
+					System.out.println("<br><br><hr class='hrStyle'/>");
+					
+					// Creating info about the path in a table format
+					System.out.println("<div class='pathInfo'>");
+					System.out.println("<table cellpadding='3' cellspacing='10'>");
+					System.out.println("<tr><td>City: </td><td> " + list.get(0).getCity()+ " - " + list.get(0).getState() + "</td></tr>");
+					System.out.println("<tr><td>Number of stops: </td><td>  " + (list.size()-1) + "</td></tr>");
+					System.out.println("<tr><td>Store: </td><td> " + list.get(1).getName().toUpperCase()+ "</td></tr>");
+					System.out.println("</table>");
+					System.out.println("</div>");	
+					
+					list.remove(0);
+					
+					//create ordered list of path
+					System.out.println("<div class='pathList'>");	
 					System.out.println("<ol start='1'>");
 					
 					for (Location c: list) {
@@ -70,10 +84,13 @@ public class MapCreator {
 					
 					System.out.println("</ol>");
 					System.out.println("<br>");
+					System.out.println("</div>");	
 				}
 				
 				System.out.println();
 			}
+			
+			
 			in.close();
 			out.close();
 			

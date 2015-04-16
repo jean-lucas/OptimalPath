@@ -43,7 +43,6 @@ public class PathFinder {
 	 * 
 	 * @param storeList		valid Stores to create a path from
 	 * @param center			position to calculate distance from
-	 * @param G						Digraph
 	 */
 	public void nearestNeighbour(ArrayList<Location> storeList, Location center) {
 		
