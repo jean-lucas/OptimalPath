@@ -87,26 +87,23 @@ public class Location {
 		
 	/**
 	 * This toString method is designed to be used with HTML format,
-	 * in order to add spaces between text, we need to write &nbsp as many times as the
-	 * number of spaces we wish to have between to words.
+	 * it uses the table data tags <td> to allow a properly formatted and spaced output
 	 */
-	@Override
-	public String toString() {
-	String lineSpace = new String(new char[10]).replace("\0", "&nbsp"); // space seperator for HTML, this allows string repetition
+	public String toHTMLString() {
 	
 	return String.format("%s %s  %s  %s %s %4f , %4f %s ",
 			"<td>",this.getAddress(),"</td><td>", this.getCity(), "</td><td>",
 			this.getLat(),this.getLon(),"</td>");
-//		return String.format("%s: %s %s %s %s %s (%4f , %4f) ",
-//				this.getName(),lineSpace,this.getAddress(), this.getCity(), this.getState(),
-//				lineSpace,this.getLat(),this.getLon() );
-		
 	}
 	
-	public static void main(String[] args) {
-		Location b = new Location(34.78601,-86.95990,"","");
-		b.getDistance(new Location(34.78506,-86.94966,"",""));
+	
+	@Override
+	public String toString() {
+		return String.format("%s %s %s %s \t (%2.2f %2.2f)", this.storeName, this.address, this.city, 
+																												 this.state, this.latidude, this.longitude);
 	}
+	
+
 }
 
 

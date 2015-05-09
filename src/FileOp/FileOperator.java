@@ -43,7 +43,7 @@ public class FileOperator {
 	 * Constructor for when a new file is inserted in data
 	 * it will NOT automatically sort the file, if we wish to sort a new textfile
 	 * we must explicitly call sortFile().
-	 * @param fileName    name of textfile, musht include extension .txt
+	 * @param fileName    name of textfile, must include extension .txt
 	 */
 	public FileOperator(String fileName) {
 		this.fileName += fileName;
@@ -61,7 +61,7 @@ public class FileOperator {
 		this.city = city.trim();
 		this.state = state.trim();
 		this.storeName = storeName.trim();
-		setupArrays();		// fill the arrays
+		setupArrays();		//populate the store arrays
 	}
 	
 	
@@ -125,6 +125,7 @@ public class FileOperator {
 	/***********************************************************************************************
 	 *               Method responsible for finding ALL cities within a state
 	 ***********************************************************************************************/	
+	
 	/**
 	 * Each element on the map corresponds to a state and is linked to a hashset of all cities in that state
 	 */
@@ -156,7 +157,7 @@ public class FileOperator {
 					
 				else {
 					tempMap.put(currentState, cities);
-					cities = new LinkedHashSet<String>();	//clear the current list
+					cities = new LinkedHashSet<String>();		//clear the current list
 					cities.add(city);
 					currentState = state;		
 				}
@@ -394,7 +395,7 @@ public class FileOperator {
 				
 		case "starbucks":
 				position = binarySearchLocation(startbucksLocations, targetLocation);
-				return getStoreInRadius(center,radius,startbucksLocations,position);  //-2 ?
+				return getStoreInRadius(center,radius,startbucksLocations,position);  
 			
 		case "walmart":
 				position = binarySearchLocation(walmartLocations, targetLocation);

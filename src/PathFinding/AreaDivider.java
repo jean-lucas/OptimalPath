@@ -6,8 +6,21 @@ import misc.Location;
  *
  * Depending on the number of drivers selected (1,2 or 4)
  * The area of the circle created by the radius is divided accordingly
- * And the the optimal path algorithm will run on each sub section
+ * And the the optimal path algorithm will run on each sub section.
  * 
+ * If # of drivers = 1:
+ * 		Trivial case, no reason to partition sections
+ * 
+ * 
+ * If # of drivers = 2:
+ * 		Split in to North & South sections but at the same time East & West sections,
+ * 		once partitioning is completed the section pair with the most balanced number of 
+ * 		store between them is chosen. 
+ * 		(this helps avoid issues where one driver has one stop, while the other has a lot)
+ * 
+ * 
+ * If # of drivers = 4:
+ * 		Split into 4 individual sections, North, South, East, and West
  */
 public class AreaDivider {
 	

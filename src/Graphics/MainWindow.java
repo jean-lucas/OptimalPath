@@ -5,14 +5,24 @@ import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Scanner;
 
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -21,6 +31,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import misc.Location;
@@ -40,7 +52,8 @@ import PathFinding.PathFinder;
  */
 public class MainWindow extends JFrame {
 	
-	// static declaritions needed
+
+	/* ******  Static Declarations ******* */
 	
 	private static final long serialVersionUID = 1L;
 	private static String[] defaultStores = {"Starbucks","McDonalds","HomeDepot","WalMart"};
@@ -51,51 +64,7 @@ public class MainWindow extends JFrame {
 	
 	
 	
-	
-	public static void main(String[] args) {
-		
-		win = new MainWindow();
-		
-		 //the following code prompts the user for their store before actually going to the program 
-		store = (String)JOptionPane.showInputDialog(
-				null,
-				"Select your store",
-				"Store Selection",
-				JOptionPane.PLAIN_MESSAGE,
-				null, defaultStores,
-				"Starbucks");
-		
-		try {  
-			store = store.toLowerCase(); 		// Client pressed X or Cancel, so quit the application
-			
-			//populate the citesByState based on which store was selected
-			String fileName = store+ "_locations.txt";
-			FileOperator fOp = new FileOperator(fileName); // this fOp should ONLY be used for constructing the citiesByState map
-			citiesByState = fOp.getAllCitiesByState();
-		}
-		
-		
-		//exit the program
-		catch (NullPointerException e) {
-			return;
-		}
-		
-			win.setVisible(true);
-			win.setTitle("Optimal Delivery Path" +  " - " + store);
-			win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
-			win.setSize(500, 500);
-			win.setResizable(false);
-			win.pack();
-	}
-	
-	
-	
-	
-	/*
-	 * All declaritons for GUI
-	 */
-	
+	/* ******  Non-Static Declarations ******* */
 	
   private String[] defaultCityList = {"Please pick a state"};
   
@@ -106,6 +75,8 @@ public class MainWindow extends JFrame {
 			"TX","UT","VT","VA","WA","WV","WI","WY"};
 	
 	private JButton goButton = new JButton("GO");
+	
+	private JButton changeStore = new JButton("Change Store");
 	
 	private JLabel cityLabel = new JLabel("City:");
 	private JLabel stateLabel = new JLabel("State:");
@@ -127,12 +98,13 @@ public class MainWindow extends JFrame {
 	private JMenuItem instructMI = new JMenuItem("Instructions");
 	private JComboBox<String> statesBox = new JComboBox<>(states); 
 	
+	private JMenuItem importFile = new JMenuItem("Import File");
 	
-	
-	
+	//constructor
 	private MainWindow(){
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.add(storeMI);
+		fileMenu.add(importFile);
 		fileMenu.add(exitMI);
 		
 		
@@ -164,10 +136,14 @@ public class MainWindow extends JFrame {
 		locationPanel.add(cityField);
 		
 		
-		JPanel mapPanel = new JPanel(new GridLayout(2,2));
+		
+		JPanel mapPanel = new JPanel(new GridLayout(3,2));
 		mapPanel.add(radiusLabel);
 		mapPanel.add(radiusField);
 		mapPanel.add(mapCheckButton);
+		mapPanel.add(Box.createVerticalStrut(20));
+		mapPanel.add(changeStore);
+		
 		
 		
 		
@@ -176,7 +152,6 @@ public class MainWindow extends JFrame {
 		container.add(driversPanel,BorderLayout.WEST);
 		container.add(mapPanel,BorderLayout.EAST);
 		container.add(goButton,BorderLayout.SOUTH);
-		
 		
 		
 		
@@ -190,12 +165,33 @@ public class MainWindow extends JFrame {
 		instructMI.addActionListener(new InstructListner());
 		statesBox.addActionListener(new StateBoxListener());
 		goButton.addActionListener(new goListener());
-			
+		importFile.addActionListener(new importFileListener());
+		changeStore.addActionListener(new ChangeStoreListener());
 		
 	}
 	
-
-
+	//  ********    Change Stores Button     ********
+	// When clicked, the program will simply restart, and re-prompt user to pick a new store.
+	private class ChangeStoreListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.dispose();		//close the current window
+			main(null);				//and restart
+		}
+	}
+	
+	
+	//TODO: implement this function..
+	// ********    Importing a new file into the program   ***********
+	
+	private class importFileListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			addTextFile();
+		}
+	}
+	
+	
 	
 	// ********    GO BUTTON   ***********
 	
@@ -321,6 +317,99 @@ public class MainWindow extends JFrame {
 			main(null);
 		}
 	}
+	
+	
+	/**
+	 * Import textfile through GUI
+	 */
+	private void addTextFile() {
+		
+		
+		JOptionPane.showMessageDialog(null, "All textfile MUST follow the format:\n\n"
+																	+ "XX, cityName, address, latitude, longitude\n\n"
+																	+ "where XX is state abbreviatation");
+		
+//		JFileChooser fileChooser = new JFileChooser();
+//    int response = fileChooser.showOpenDialog(null);
+//   
+//    if (response == JFileChooser.APPROVE_OPTION) {
+//      File file = fileChooser.getSelectedFile();
+//      String filePath = "data/" + file.getName();
+//      
+//      try {
+//        Scanner in = new Scanner(new FileReader(file));
+//        PrintStream out = new PrintStream(filePath);
+//        System.setOut(out);
+//        
+//        int lineCount = 0;
+//        while(in.hasNext()) {
+//        	System.out.println(in.nextLine());
+//        	lineCount++;
+//        }
+//        
+//        RandomAccessFile f = new RandomAccessFile(new File(filePath), "rw");
+//        f.seek(0); // to the beginning
+//        f.write(("NUMBER OF ENTRIES: "+lineCount).getBytes());
+//        
+//        f.close();
+//        in.close();
+//        out.close();
+//      }
+//      catch (IOException e1 ) {
+//      	System.out.println(e1.getLocalizedMessage());
+//      	throw new Error();
+//      }
+//
+//      }
+	}
+	
+	
+	
+	
+	
+	
+	
+	// Instantiation of the program
+
+	public static void main(String[] args) {
+		
+		win = new MainWindow();
+		
+		 //the following code prompts the user for their store before actually going to the program 
+		store = (String)JOptionPane.showInputDialog(
+				null,
+				"Select your store",
+				"Store Selection",
+				JOptionPane.PLAIN_MESSAGE,
+				null, defaultStores,
+				"Starbucks");
+		
+		try {  
+			store = store.toLowerCase(); 		// Client pressed X or Cancel, so quit the application
+			
+			//populate the citesByState based on which store was selected
+			String fileName = store + "_locations.txt";
+			FileOperator fOp = new FileOperator(fileName); // this fOp should ONLY be used for constructing the citiesByState map
+			citiesByState = fOp.getAllCitiesByState();
+		}
+		
+		
+		//exit the program 
+		catch (NullPointerException e) {
+			return;
+		}
+		
+			win.setVisible(true);
+			win.setTitle("Optimal Delivery Path" +  " - " + store.toUpperCase());
+			win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+//			win.setSize(500, 500);
+			win.setResizable(false);
+			win.pack();
+	}
+	
+	
+	
 }
 	
 	

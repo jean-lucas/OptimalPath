@@ -44,8 +44,8 @@ public class MapCreator {
 
 		
 		try {
-			Scanner in = new Scanner(new File("data/template.html"));
-			PrintStream out = new PrintStream("data/output"+count+".html");
+			Scanner in = new Scanner(new File("data/web/template.html"));
+			PrintStream out = new PrintStream("data/web/output"+count+".html");
 			System.setOut(out);
 			
 			while (in.hasNext()) {
@@ -85,7 +85,7 @@ public class MapCreator {
 					int i = 1;
 					for (Location c: list) {
 					// creating table row for each stop in route
-						System.out.println("<tr>" + "<td>"+(i++)+"</td>" + c.toString() +"</tr>");			
+						System.out.println("<tr>" + "<td>"+(i++)+"</td>" + c.toHTMLString() +"</tr>");			
 					}
 					
 					System.out.println("</ol>");
@@ -101,7 +101,7 @@ public class MapCreator {
 			out.close();
 			
 			//opening html file to the default browser in the system
-			File htmlFile = new File("data/output"+count+".html");
+			File htmlFile = new File("data/web/output"+count+".html");
 			Desktop.getDesktop().browse(htmlFile.toURI());
 		}
 		
@@ -118,6 +118,17 @@ public class MapCreator {
 	 * IMPORTANT: number of stores generated on this map can be at MOST 25 (issue with google maps)
 	 */
 	private void generateGoogleMap() {
+		
+		
+		if (list.size() > 25) {
+			try {
+				Desktop.getDesktop().browse(new File("data/web/maxSize.html").toURI());
+				return;
+			} 
+			catch (IOException e) {
+				System.out.println(e.getLocalizedMessage());
+			}
+		}
 		String[] points = new String[list.size()];		
 		
 		// generate a list of latitude and longitude points
@@ -146,7 +157,8 @@ public class MapCreator {
 		
 		try {
 			java.awt.Desktop.getDesktop().browse(java.net.URI.create(path));
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			System.out.println(e.getLocalizedMessage());
 		}
 	}
